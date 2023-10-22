@@ -25,6 +25,11 @@ void Assets::addTexture(const std::string & name, const std::string & path)
 
 }
 
+void Assets::addAnimation(const std::string & name, const Animation & anim)
+{
+
+}
+
 void Assets::addSound(const std::string & name, const std::string & path)
 {
     auto soundBuffer = std::shared_ptr<sf::SoundBuffer>(new sf::SoundBuffer());
@@ -59,9 +64,14 @@ void Assets::addFont(const std::string & name, const std::string & path)
 }
 
 
-std::shared_ptr<sf::Texture> & Assets::getTexture(std::string name)
+std::shared_ptr<sf::Texture> & Assets::getTexture(const std::string & name)
 {
     return m_texturesMap[name];
+}
+
+Animation & Assets::getAnimation(const std::string & name)
+{
+    return m_animationMap[name];
 }
 
 std::shared_ptr<sf::Sound> & Assets::getSound(const std::string & name)
@@ -69,7 +79,7 @@ std::shared_ptr<sf::Sound> & Assets::getSound(const std::string & name)
     return m_soundsMap[name];
 }
 
-std::shared_ptr<sf::Font> & Assets::getFont(std::string name)
+std::shared_ptr<sf::Font> & Assets::getFont(const std::string & name)
 {
     return m_fontsMap[name];
 }

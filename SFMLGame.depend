@@ -469,12 +469,12 @@
 	<string>
 	<iostream>
 
-1697031493 e:\cppproject\sfmlgame\entity.h
+1697986927 e:\cppproject\sfmlgame\entity.h
 	"Components.h"
 	<string>
 	<tuple>
 
-1697187884 e:\cppproject\sfmlgame\components.h
+1697978771 e:\cppproject\sfmlgame\components.h
 	"SFML/Graphics.hpp"
 	"Vec2.h"
 
@@ -492,7 +492,7 @@
 	<memory>
 	"Entity.h"
 
-1697476016 source:e:\cppproject\sfmlgame\game.cpp
+1697987865 source:e:\cppproject\sfmlgame\game.cpp
 	"Game.h"
 	<iostream>
 	"Entity.h"
@@ -936,12 +936,17 @@
 	<SFML/Graphics/Drawable.hpp>
 	<SFML/Window/GlResource.hpp>
 
-1696654029 source:e:\cppproject\sfmlgame\physics.cpp
+1697987930 source:e:\cppproject\sfmlgame\physics.cpp
 	"Physics.h"
 	<math.h>
-
-1696653605 e:\cppproject\sfmlgame\physics.h
+	<cmath>
+	<iostream>
 	"Vec2.h"
+
+1697987078 e:\cppproject\sfmlgame\physics.h
+	"Vec2.h"
+	"Entity.h"
+	<memory>
 
 1696753541 e:\cppproject\sfmlgame\action.h
 	<iostream>
@@ -949,9 +954,10 @@
 1696753456 source:e:\cppproject\sfmlgame\action.cpp
 	"Action.h"
 
-1697476070 e:\cppproject\sfmlgame\assets.h
+1697947776 e:\cppproject\sfmlgame\assets.h
 	"SFML/Graphics.hpp"
 	"SFML/Audio.hpp"
+	"Animation.h"
 	<memory>
 
 1525812018 e:\cppproject\sfml-2.5.1\include\sfml\audio.hpp
@@ -1058,9 +1064,19 @@
 	<SFML/Audio/Export.hpp>
 	<string>
 
-1697476115 source:e:\cppproject\sfmlgame\assets.cpp
+1697977744 source:e:\cppproject\sfmlgame\assets.cpp
 	"Assets.h"
 	"SFML/Audio.hpp"
 	<iostream>
 	<memory>
+
+1697955292 source:e:\cppproject\sfmlgame\animation.cpp
+	"Animation.h"
+	<cmath>
+
+1697977837 e:\cppproject\sfmlgame\animation.h
+	<iostream>
+	<memory>
+	"SFML/Graphics.hpp"
+	"Vec2.h"
 

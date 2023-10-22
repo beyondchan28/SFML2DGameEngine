@@ -13,14 +13,18 @@ class CTransform : public Component
 {
 public:
     Vec2 pos = {0.0, 0.0};
+    Vec2 prevPos = {0.0, 0.0};
+    Vec2 scale = {1.0, 1.0};
     Vec2 velocity = {0.0, 0.0};
     float angle = 0;
 
     CTransform() {}
-    CTransform(const Vec2 & p, const Vec2 & vel, float a)
-        :pos(p), velocity(vel), angle(a)
-    {
-    }
+    CTransform(const Vec2 & p)
+        : pos(p)
+    {}
+    CTransform(const Vec2 & p, const Vec2 & vel, const Vec2 & sc, float a)
+        :pos(p), prevPos(p), velocity(vel), scale(sc), angle(a)
+    {}
 };
 
 class CShape : public Component
@@ -62,6 +66,26 @@ public:
 };
 
 
+class CBoundingBox : public Component
+{
+public:
+    Vec2 size;
+    Vec2 halfSize;
+    CBoundingBox() {};
+    CBoundingBox(const Vec2 & s)
+        :size(s), halfSize(s.x / 2, s.y/2)
+    {}
+};
+
+class CGravity : public Component
+{
+public:
+    float gravity = 0;
+    CGravity() {}
+    CGravity(float g) : gravity(g) {}
+};
+
+//need to change this
 class CLifespan : public Component
 {
 public:

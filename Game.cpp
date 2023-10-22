@@ -1,8 +1,3 @@
-/*
-Setiap function/method hanya memiliki satu tugas dan independent sehingga
-bila diubah, tidak mengganggu fungsi yang lain.
-*/
-
 #include "Game.h"
 #include <iostream>
 #include "Entity.h"
@@ -17,7 +12,7 @@ bila diubah, tidak mengganggu fungsi yang lain.
 #include "Assets.h"
 
 int score = 0;
-int maxEnemySpawned = 6;
+int maxEnemySpawned = 0;
 
 struct WindowConfig
 {
@@ -265,7 +260,7 @@ void Game::sRender()
     {
         e->getComponent<CShape>().circle.setPosition(e->getComponent<CTransform>().pos.x, e->getComponent<CTransform>().pos.y);
         e->getComponent<CTransform>().angle += 1.0f;
-        e->getComponent<CShape>().circle.setRotation(e->getComponent<CTransform>().angle);
+        //e->getComponent<CShape>().circle.setRotation(e->getComponent<CTransform>().angle);
 
         m_window.draw(e->getComponent<CShape>().circle);
     }
@@ -380,13 +375,15 @@ void Game::sMovement()
 void Game::spawnPlayer()
 {
     auto newEntity = m_entities.addEntity("Player");
-    newEntity->addComponent<CTransform>(Vec2(200.0f, 200.0f), Vec2(1.0f, 1.0f), 0.0f);
+    newEntity->addComponent<CTransform>(Vec2(200.0f, 200.0f), Vec2(1.0f, 1.0f), Vec2(1.0f, 1.0f), 0.0f);
     newEntity->addComponent<CShape>(pConf.shapeRadius, pConf.shapeVertices,
                                                  sf::Color(pConf.fillColorRed, pConf.fillColorGreen, pConf.fillColorBlue),
                                                  sf::Color(pConf.outlineColorRed, pConf.outlineColorGreen, pConf.outlineColorBlue),
                                                  pConf.outlineThickness);
-    newEntity->addComponent<CCollision>(pConf.collisionRadius);
+    //newEntity->addComponent<CCollision>(pConf.collisionRadius);
     newEntity->addComponent<CInput>();
+    const Vec2 size = {32.0f, 32.0f};
+    newEntity->addComponent<CBoundingBox>( size );
 
     m_player = newEntity;
 }
@@ -397,13 +394,15 @@ void Game::spawnBullet(const Vec2 & playerPos, const Vec2 & target)
 
     Vec2 dist = target - playerPos;
 
-    newBullet->addComponent<CTransform>(playerPos, dist, 0.0f);
+    newBullet->addComponent<CTransform>(playerPos, dist, Vec2(1.0f, 1.0f), 0.0f);
     newBullet->addComponent<CShape>(bConf.shapeRadius, bConf.shapeVertices,
                                                  sf::Color(bConf.fillColorRed, bConf.fillColorGreen, bConf.fillColorBlue),
                                                  sf::Color(bConf.outlineColorRed, bConf.outlineColorGreen, bConf.outlineColorBlue),
                                                  bConf.outlineThickness);
     newBullet->addComponent<CLifespan>(bConf.lifespan);
-    newBullet->addComponent<CCollision>(bConf.collisionRadius);
+    //newBullet->addComponent<CCollision>(bConf.collisionRadius);
+    const Vec2 size = {32.0f, 32.0f};
+    newBullet->addComponent<CBoundingBox>( size );
 
 
 }
@@ -418,13 +417,15 @@ void Game::spawnEnemy()
     size_t vert  = (size_t) rand() % (eConf.maxShapeVertices - eConf.minShapeVertices + 1) + eConf.minShapeVertices;
     std::cout << vert << "\n";
 
-    newEntity->addComponent<CTransform>(Vec2(ex, ey), Vec2(0.0f, 0.0f), 0.0f);
+    newEntity->addComponent<CTransform>(Vec2(ex, ey), Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), 0.0f);
     newEntity->addComponent<CShape>(eConf.shapeRadius, vert,
                                                  sf::Color(255, 0, 0),
                                                  sf::Color(eConf.outlineColorRed, eConf.outlineColorGreen, eConf.outlineColorBlue),
                                                  eConf.outlineThickness);
     //newEntity->cLifespan = std::make_shared<CLifespan>(300);
-    newEntity->addComponent<CCollision>(eConf.collisionRadius);
+    //newEntity->addComponent<CCollision>(eConf.collisionRadius);
+    const Vec2 size = {32.0f, 32.0f};
+    newEntity->addComponent<CBoundingBox>( size );
 
     m_lastEnemySpawnTime = m_currentFrame;
 
@@ -436,13 +437,15 @@ void Game::spawnSmallEnemies(const std::shared_ptr<Entity> & parentEnemy, const 
 
     //Vec2 posVec = {parentEnemy->cTransform->pos.normalized().y;
 
-    newSmallEnemy->addComponent<CTransform>(parentEnemy->getComponent<CTransform>().pos, vel, angle);
+    newSmallEnemy->addComponent<CTransform>(parentEnemy->getComponent<CTransform>().pos, vel, Vec2(1.0f, 1.0f), angle);
     newSmallEnemy->addComponent<CShape>((float)(parentEnemy->getComponent<CShape>().circle.getRadius() / 3), parentEnemy->getComponent<CShape>().circle.getPointCount(),
                                                  sf::Color(255, 0, 0),
                                                  sf::Color(eConf.outlineColorRed, eConf.outlineColorGreen, eConf.outlineColorBlue),
                                                  eConf.outlineThickness);
-    newSmallEnemy->addComponent<CCollision>((parentEnemy->getComponent<CCollision>().radius / 3));
+    //newSmallEnemy->addComponent<CCollision>((parentEnemy->getComponent<CCollision>().radius / 3));
     newSmallEnemy->addComponent<CLifespan>(eConf.smallLifespan);
+    const Vec2 size = {32.0f, 32.0f};
+    newSmallEnemy->addComponent<CBoundingBox>( size );
 
 }
 
@@ -501,7 +504,7 @@ void Game::sEnemySpawner()
     }
 }
 
-
+/**
 void Game::sCollision()
 {
     for(auto & e : m_entities.getEntities("Enemy"))
@@ -572,4 +575,12 @@ void Game::sCollision()
         }
     }
 }
+**/
 
+void Game::sCollision()
+{
+    for(auto & e : m_entities.getEntities("Enemy"))
+    {
+        m_physics.getOverlap(m_player, e);
+    }
+}
