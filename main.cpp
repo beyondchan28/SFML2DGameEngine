@@ -8,37 +8,38 @@
 #include <memory>
 #include <vector>
 
+class Object
+{
+    int a = 5;
+
+public:
+    Object(int num) : a(num) {};
+
+    int & getNumber()
+    {
+        return a;
+    }
+};
+
 
 int main()
 {
-    std::string key1 = "fuck";
-    std::shared_ptr<int> val1 (new int(33));
-    std::vector<std::shared_ptr<int>> vec1 {val1};
-
-    std::string key2 = "duck";
-    std::shared_ptr<int> val2 (new int(22));
-    std::vector<std::shared_ptr<int>> vec2 {val2};
-
-    std::shared_ptr<int> val3 (new int(666));
-
-    std::map<std::string, std::vector<std::shared_ptr<int>>> tMap {{key1, vec1}, {key2, vec2}};
-
-    std::string test = "fuck";
-    std::cout << "heck ? "  << test << "\n";
-
-    for (auto & [key, val] : tMap)
-    {
-        if(key == "duck")
-        {
-            tMap[key].push_back(val3);
-            //std::cout << *tMap[key].back() << "\n";
-            //findVal.push_back(new int(5));
-        }
-
-        std::cout << key << " " << val.size() << "\n";
-    }
+    /**
+    Object a = {6};             // constructing/creating object 'a'
+    Object a(6);                // also constructing/creating object 'a'
+    Object * b = new Object(6); // storing new object to pointer
+    Object * c = &a;            // pointing to address 'a'
+    Object d = a;               // copying object 'a'
+    Object * e = b;             // pointer to pointer
+    **/
+    /**
+    for the sake of cheap computation. because pointer is just an "aliases"
+    for A that u want to accessing. despite put 'all the thing' A had
+    inside a new bucket, u just pointing to the bucket that stored A
 
 
+    **/
+    //const int b = a.getNumber() + 1;
 
     Game game;
     game.run();

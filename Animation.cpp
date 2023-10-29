@@ -1,5 +1,7 @@
 #include "Animation.h"
+#include "SFML/Graphics.hpp"
 #include <cmath>
+#include <iostream>
 
 Animation::Animation(){};
 
@@ -23,9 +25,16 @@ Animation::Animation(const std::string & name, const sf::Texture & texture, size
 void Animation::update()
 {
     m_currentFrame++;
+
+    size_t animFrame = (m_currentFrame / m_speed) % m_frameCount;
+    sf::IntRect rectangle = {animFrame * m_size.x, 0, m_size.x, m_size.y};
+    m_sprite.setTextureRect(rectangle);
+    //std::cout << m_sprite.getTextureRect().left << "\n";
+    //std::cout << m_currentFrame << "\n";
+
 }
 
-bool Animation::hasEnded()
+bool Animation::hasEnded() const
 {
     return false;
 }
@@ -41,7 +50,7 @@ const Vec2 & Animation::getSize()
     return m_size;
 }
 
-const Sprite & Animation::getSprite()
+sf::Sprite & Animation::getSprite()
 {
     return m_sprite;
 }

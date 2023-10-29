@@ -55,6 +55,8 @@ class Game
 
     const std::map<sf::Keyboard::Key, std::string> & getActionMap() const;
 
+    void sAnimation();
+
 public:
 
     Game();

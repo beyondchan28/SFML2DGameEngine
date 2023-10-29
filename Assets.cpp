@@ -11,15 +11,16 @@ Assets::Assets() {}
 
 void Assets::addTexture(const std::string & name, const std::string & path)
 {
-    auto texture = std::shared_ptr<sf::Texture>(new sf::Texture());
+    //auto texture = std::shared_ptr<sf::Texture>(new sf::Texture());
+    sf::Texture texture;
 
-    if(!texture->loadFromFile(path))
+    if(!texture.loadFromFile(path))
     {
         std::cout << "Load texture failed !" << "\n";
     }
     else
     {
-        m_texturesMap.insert(std::pair<std::string, std::shared_ptr<sf::Texture>>(name, texture));
+        m_texturesMap.insert(std::pair<std::string, sf::Texture>(name, texture));
         std::cout << "Texture loaded" << "\n";
     }
 
@@ -27,7 +28,7 @@ void Assets::addTexture(const std::string & name, const std::string & path)
 
 void Assets::addAnimation(const std::string & name, const Animation & anim)
 {
-
+    m_animationMap.insert(std::pair<std::string, Animation>(name, anim));
 }
 
 void Assets::addSound(const std::string & name, const std::string & path)
@@ -41,30 +42,32 @@ void Assets::addSound(const std::string & name, const std::string & path)
     else
     {
         m_soundBufferVec.push_back(soundBuffer);
-        auto sound = std::shared_ptr<sf::Sound>(new sf::Sound());
-        sound->setBuffer(*soundBuffer);
-        m_soundsMap.insert(std::pair<std::string, std::shared_ptr<sf::Sound>>(name, sound));
+        //auto sound = std::shared_ptr<sf::Sound>(new sf::Sound());
+        sf::Sound sound;
+        sound.setBuffer(*soundBuffer);
+        m_soundsMap.insert(std::pair<std::string, sf::Sound>(name, sound));
         std::cout << "Sound loaded" << "\n";
     }
 }
 
 void Assets::addFont(const std::string & name, const std::string & path)
 {
-    auto font = std::shared_ptr<sf::Font>(new sf::Font());
-    if(!font->loadFromFile(path))
+    //auto font = std::shared_ptr<sf::Font>(new sf::Font());
+    sf::Font font;
+    if(!font.loadFromFile(path))
     {
         std::cout << "Load font failed" << "\n";
     }
     else
     {
-        m_fontsMap.insert(std::pair<std::string, std::shared_ptr<sf::Font>>(name, font));
+        m_fontsMap.insert(std::pair<std::string, sf::Font>(name, font));
         std::cout << "Font loaded" << "\n";
     }
 
 }
 
 
-std::shared_ptr<sf::Texture> & Assets::getTexture(const std::string & name)
+sf::Texture & Assets::getTexture(const std::string & name)
 {
     return m_texturesMap[name];
 }
@@ -74,12 +77,12 @@ Animation & Assets::getAnimation(const std::string & name)
     return m_animationMap[name];
 }
 
-std::shared_ptr<sf::Sound> & Assets::getSound(const std::string & name)
+sf::Sound & Assets::getSound(const std::string & name)
 {
     return m_soundsMap[name];
 }
 
-std::shared_ptr<sf::Font> & Assets::getFont(const std::string & name)
+sf::Font & Assets::getFont(const std::string & name)
 {
     return m_fontsMap[name];
 }

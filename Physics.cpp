@@ -1,6 +1,5 @@
 #include "Physics.h"
 #include <math.h>
-#include <cmath>
 #include <iostream>
 #include "Vec2.h"
 
@@ -26,27 +25,29 @@ Vec2 Physics::getOverlap(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b) c
         Vec2 & aPos = a->getComponent<CTransform>().pos;
         Vec2 & bPos = b->getComponent<CTransform>().pos;
 
-        float aXBBox = aPos.x + aOrigin.x;
-        float aYBBox = aPos.y + aOrigin.y;
-        float bXBBox = bPos.x + bOrigin.x;
-        float bYBBox = bPos.y + bOrigin.y;
+        float dx = std::abs((aPos.x + aOrigin.x) - (bPos.x + bOrigin.x));
+        float dy = std::abs((aPos.y + aOrigin.y) - (bPos.y + bOrigin.y));
 
-        float dx = std::abs(aXBBox - bXBBox);
-        float dy = std::abs(aYBBox - bYBBox);
+        bool xOverlap = dx <= (aOrigin.x + bOrigin.x);
+        bool yOverlap = dy <= (aOrigin.y + bOrigin.y);
 
-        float xAxisOverlap = aXBBox + bXBBox - dx;
-        float yAxisOverlap = aYBBox + bYBBox - dy;
-
-        std::cout << xAxisOverlap << "\n";
-        std::cout << yAxisOverlap << "\n";
+        //std::cout << dx << "\n";
+        //std::cout << dy << "\n";
 
         //if both is positive : means overlap
-        if (xAxisOverlap > 0 || yAxisOverlap > 0)
+        if (xOverlap && yOverlap)
         {
+
             std::cout << "Overlap" << "\n";
-            overlap.x = xAxisOverlap;
-            overlap.y = yAxisOverlap;
+            //overlap.x = xAxisOverlap;
+            //overlap.y = yAxisOverlap;
         }
+        else
+        {
+            std::cout << "No Overlap" << "\n";
+
+        }
+
     }
 
     return overlap;

@@ -4,28 +4,26 @@
 #include "SFML/Graphics.hpp"
 #include "Vec2.h"
 
-typedef sf::Sprite Sprite;
 
 class Animation
 {
-    Sprite m_sprite;
-    size_t m_frameCount;
-    size_t m_gameFrame;
-    size_t m_currentFrame;
-    size_t m_speed;
-    Vec2 m_size;
-    std::string m_name;
-    std::string m_texName;
+    sf::Sprite m_sprite;
+    size_t m_frameCount = 1;
+    size_t m_gameFrame = 0;
+    size_t m_currentFrame = 0;
+    size_t m_speed = 0;
+    Vec2 m_size = {1, 1};
+    std::string m_name = "none";
 
 public:
     Animation();
     Animation(const std::string & name, const sf::Texture & texture);
     Animation(const std::string & name, const sf::Texture & texture, size_t frameCount, size_t speed);
     void update();
-    bool hasEnded();
+    bool hasEnded() const;
     const std::string & getName();
     const Vec2 & getSize();
-    const Sprite & getSprite();
+    sf::Sprite & getSprite();
 
 
 };

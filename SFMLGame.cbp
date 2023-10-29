@@ -56,6 +56,8 @@
 		</Linker>
 		<Unit filename="Action.cpp" />
 		<Unit filename="Action.h" />
+		<Unit filename="Animation.cpp" />
+		<Unit filename="Animation.h" />
 		<Unit filename="Assets.cpp" />
 		<Unit filename="Assets.h" />
 		<Unit filename="Components.h" />

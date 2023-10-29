@@ -10,6 +10,7 @@
 
 #include "Action.h"
 #include "Assets.h"
+#include "Animation.h"
 
 int score = 0;
 int maxEnemySpawned = 0;
@@ -199,6 +200,9 @@ void Game::init()
     //setupAssets();
     m_assets.addSound("test", "sound/DoubleBeep.wav");
     m_assets.addFont("test", fConf.fontPath );
+    m_assets.addTexture("test", "sprite/walk.png");
+    Animation playerAnimRun = {"test", m_assets.getTexture("test"), 6, 10};
+    m_assets.addAnimation("test", playerAnimRun);
 
     //load the config file hered
     registerAction(sf::Keyboard::W, "UP");
@@ -212,7 +216,7 @@ void Game::init()
 
     auto & m_font = m_assets.getFont("test");
 
-    m_text.setFont(*m_font);
+    m_text.setFont(m_font);
     m_text.setCharacterSize(fConf.fontSize);
     m_text.setFillColor(sf::Color(fConf.colorRed, fConf.colorGreen, fConf.colorBlue));
     m_text.setStyle(sf::Text::Bold);
@@ -240,6 +244,7 @@ void Game::run()
             sEnemySpawner();
             sMovement();
             sCollision();
+            sAnimation();
 
         }
 
@@ -258,11 +263,20 @@ void Game::sRender()
 
     for (auto& e : m_entities.getEntities())
     {
-        e->getComponent<CShape>().circle.setPosition(e->getComponent<CTransform>().pos.x, e->getComponent<CTransform>().pos.y);
-        e->getComponent<CTransform>().angle += 1.0f;
+        auto & entityPosX = e->getComponent<CTransform>().pos.x;
+        auto & entityPosY = e->getComponent<CTransform>().pos.y;
+        e->getComponent<CShape>().circle.setPosition(entityPosX, entityPosY);
+        e->getComponent<CShape>().circle.setRotation(45.0f);
+        //e->getComponent<CTransform>().angle += 1.0f;
         //e->getComponent<CShape>().circle.setRotation(e->getComponent<CTransform>().angle);
+        if (e->hasComponent<CAnimation>())
+        {
+            e->getComponent<CAnimation>().animation.getSprite().setPosition(entityPosX, entityPosY);
+            m_window.draw(e->getComponent<CAnimation>().animation.getSprite());
+        }
 
         m_window.draw(e->getComponent<CShape>().circle);
+
     }
 
 
@@ -301,7 +315,7 @@ void Game::sUserInput()
         {
             if (event.mouseButton.button == sf::Mouse::Left)
             {
-                m_assets.getSound("test")->play();
+                m_assets.getSound("test").play();
                 spawnBullet(m_player->getComponent<CTransform>().pos, Vec2(event.mouseButton.x, event.mouseButton.y));
             }
         }
@@ -377,13 +391,18 @@ void Game::spawnPlayer()
     auto newEntity = m_entities.addEntity("Player");
     newEntity->addComponent<CTransform>(Vec2(200.0f, 200.0f), Vec2(1.0f, 1.0f), Vec2(1.0f, 1.0f), 0.0f);
     newEntity->addComponent<CShape>(pConf.shapeRadius, pConf.shapeVertices,
-                                                 sf::Color(pConf.fillColorRed, pConf.fillColorGreen, pConf.fillColorBlue),
+                                                 sf::Color(pConf.fillColorRed, pConf.fillColorGreen, pConf.fillColorBlue, 0),
                                                  sf::Color(pConf.outlineColorRed, pConf.outlineColorGreen, pConf.outlineColorBlue),
                                                  pConf.outlineThickness);
+
+
     //newEntity->addComponent<CCollision>(pConf.collisionRadius);
     newEntity->addComponent<CInput>();
-    const Vec2 size = {32.0f, 32.0f};
+    const Vec2 size = {16.0f, 16.0f};
     newEntity->addComponent<CBoundingBox>( size );
+    newEntity->addComponent<CState>("idle");
+    newEntity->addComponent<CAnimation>();
+
 
     m_player = newEntity;
 }
@@ -414,17 +433,18 @@ void Game::spawnEnemy()
     float ex = rand() % (m_window.getSize().x - eConf.shapeRadius); //subtract its radius
     float ey = rand() % (m_window.getSize().y - eConf.shapeRadius);
 
-    size_t vert  = (size_t) rand() % (eConf.maxShapeVertices - eConf.minShapeVertices + 1) + eConf.minShapeVertices;
-    std::cout << vert << "\n";
+    //size_t vert  = (size_t) rand() % (eConf.maxShapeVertices - eConf.minShapeVertices + 1) + eConf.minShapeVertices;
+    size_t vert  = 4;
+    //std::cout << vert << "\n";
 
     newEntity->addComponent<CTransform>(Vec2(ex, ey), Vec2(0.0f, 0.0f), Vec2(1.0f, 1.0f), 0.0f);
     newEntity->addComponent<CShape>(eConf.shapeRadius, vert,
                                                  sf::Color(255, 0, 0),
-                                                 sf::Color(eConf.outlineColorRed, eConf.outlineColorGreen, eConf.outlineColorBlue),
+                                                 sf::Color(eConf.outlineColorRed, eConf.outlineColorGreen, eConf.outlineColorBlue, 0),
                                                  eConf.outlineThickness);
     //newEntity->cLifespan = std::make_shared<CLifespan>(300);
     //newEntity->addComponent<CCollision>(eConf.collisionRadius);
-    const Vec2 size = {32.0f, 32.0f};
+    const Vec2 size = {16.0f, 16.0f};
     newEntity->addComponent<CBoundingBox>( size );
 
     m_lastEnemySpawnTime = m_currentFrame;
@@ -582,5 +602,25 @@ void Game::sCollision()
     for(auto & e : m_entities.getEntities("Enemy"))
     {
         m_physics.getOverlap(m_player, e);
+    }
+}
+
+void Game::sAnimation()
+{
+    if (m_player->getComponent<CState>().state == "idle")
+    {
+        if (m_player->getComponent<CAnimation>().animation.getName() != "test")
+        {
+            m_player->addComponent<CAnimation>(m_assets.getAnimation("test"), true);
+        }
+    }
+
+
+    for (auto & e : m_entities.getEntities())
+    {
+        if (e->hasComponent<CAnimation>())
+        {
+            e->getComponent<CAnimation>().animation.update();
+        }
     }
 }

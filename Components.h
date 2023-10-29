@@ -2,6 +2,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "Vec2.h"
+#include "Animation.h"
 
 class Component
 {
@@ -107,4 +108,22 @@ public:
     bool right = false;
 
     CInput() {}
+};
+
+class CAnimation : public Component
+{
+public:
+    Animation animation;
+    bool repeat = false;
+    CAnimation(){};
+    CAnimation(const Animation & a, bool r): animation{a}, repeat(r) {};
+
+};
+
+class CState : public Component
+{
+public:
+    std::string state = "jumping";
+    CState() {};
+    CState(const std::string & s): state(s) {};
 };

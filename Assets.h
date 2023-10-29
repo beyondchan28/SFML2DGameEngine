@@ -4,10 +4,10 @@
 #include "Animation.h"
 #include <memory>
 
-typedef std::map<std::string, std::shared_ptr<sf::Texture>> TextureMap;
+typedef std::map<std::string, sf::Texture> TextureMap;
 typedef std::map<std::string, Animation> AnimationMap;
-typedef std::map<std::string, std::shared_ptr<sf::Sound>> SoundMap;
-typedef std::map<std::string, std::shared_ptr<sf::Font>> FontMap;
+typedef std::map<std::string, sf::Sound> SoundMap;
+typedef std::map<std::string, sf::Font> FontMap;
 
 
 
@@ -26,8 +26,8 @@ public:
     void addSound(const std::string & name, const std::string & path);
     void addFont(const std::string & name, const std::string & path);
 
-    std::shared_ptr<sf::Texture> & getTexture(const std::string & name);
+    sf::Texture & getTexture(const std::string & name);
     Animation & getAnimation(const std::string & name);
-    std::shared_ptr<sf::Sound> & getSound(const std::string & name);
-    std::shared_ptr<sf::Font> & getFont(const std::string & name);
+    sf::Sound & getSound(const std::string & name);
+    sf::Font & getFont(const std::string & name);
 };
