@@ -7,7 +7,43 @@ typedef std::vector<std::shared_ptr<sf::SoundBuffer>> SoundBufferVec;
 
 SoundBufferVec m_soundBufferVec;
 
+struct AssetsConf
+{
+    std::string name, path;
+};
+
+struct AssetsConf assetConf;
+
+
 Assets::Assets() {}
+
+void Assets::loadFromFile(const std::string & path)
+{
+    std::ifstream inputFile(fileName);
+    std::string firstWordInLine;
+
+     while(inputFile >> firstWordInLine)
+    {
+        if (firstWordInLine == "Texture")
+        {
+            inputFile >> assetConf.name >> assetConf.path;
+            m_assets.addTexture(assetConf.name, assetConf.path);
+        }
+        else if (firstWordInLine == "Sound" )
+        {
+            inputFile >> assetConf.name >> assetConf.path;
+            m_assets.addSound(assetConf.name, assetConf.path);
+
+        }
+        else if (firstWordInLine == "Font")
+        {
+            inputFile >> assetConf.name >> assetConf.path;
+            m_assets.addFont(assetConf.name, assetConf.path);
+
+        }
+
+    }
+}
 
 void Assets::addTexture(const std::string & name, const std::string & path)
 {

@@ -1,0 +1,3 @@
+Sound soundName sound/DoubleBeep.wav
+Texture textName sprite/walk.png
+Font fontName font/Silkscreen-Regular.ttf

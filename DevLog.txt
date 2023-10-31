@@ -31,3 +31,4 @@ todo:
 - Debug mode ()
 - Platformer physics ()
 - Game Engine class, Scene Base class and Scene class ()
+    + test the integration of Scene and GameEngine by displaying Scene_Menu
