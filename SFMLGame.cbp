@@ -67,8 +67,15 @@
 		<Unit filename="EntityManager.h" />
 		<Unit filename="Game.cpp" />
 		<Unit filename="Game.h" />
+		<Unit filename="GameEngine.cpp" />
+		<Unit filename="GameEngine.h" />
 		<Unit filename="Physics.cpp" />
 		<Unit filename="Physics.h" />
+		<Unit filename="Scene.cpp" />
+		<Unit filename="Scene.h" />
+		<Unit filename="Scene_Menu.cpp" />
+		<Unit filename="Scene_Menu.h" />
+		<Unit filename="Scene_Play.h" />
 		<Unit filename="Vec2.cpp" />
 		<Unit filename="Vec2.h">
 			<Option target="&lt;{~None~}&gt;" />

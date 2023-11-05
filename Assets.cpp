@@ -1,6 +1,7 @@
 #include "Assets.h"
 #include "SFML/Audio.hpp"
 #include <iostream>
+#include <fstream>
 #include <memory>
 
 typedef std::vector<std::shared_ptr<sf::SoundBuffer>> SoundBufferVec;
@@ -19,7 +20,7 @@ Assets::Assets() {}
 
 void Assets::loadFromFile(const std::string & path)
 {
-    std::ifstream inputFile(fileName);
+    std::ifstream inputFile(path);
     std::string firstWordInLine;
 
      while(inputFile >> firstWordInLine)
@@ -27,18 +28,20 @@ void Assets::loadFromFile(const std::string & path)
         if (firstWordInLine == "Texture")
         {
             inputFile >> assetConf.name >> assetConf.path;
-            m_assets.addTexture(assetConf.name, assetConf.path);
+            addTexture(assetConf.name, assetConf.path);
+            std::cout << assetConf.name << "Load \n";
         }
         else if (firstWordInLine == "Sound" )
         {
             inputFile >> assetConf.name >> assetConf.path;
-            m_assets.addSound(assetConf.name, assetConf.path);
-
+            addSound(assetConf.name, assetConf.path);
+            std::cout << assetConf.name << "Load \n";
         }
         else if (firstWordInLine == "Font")
         {
             inputFile >> assetConf.name >> assetConf.path;
-            m_assets.addFont(assetConf.name, assetConf.path);
+            addFont(assetConf.name, assetConf.path);
+            std::cout << assetConf.name << "Load \n";
 
         }
 
@@ -118,7 +121,7 @@ sf::Sound & Assets::getSound(const std::string & name)
     return m_soundsMap[name];
 }
 
-sf::Font & Assets::getFont(const std::string & name)
+const sf::Font & Assets::getFont(const std::string & name)
 {
     return m_fontsMap[name];
 }

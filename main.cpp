@@ -1,4 +1,5 @@
-#include "Game.h"
+//#include "Game.h"
+#include "GameEngine.h"
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
@@ -41,8 +42,11 @@ int main()
     **/
     //const int b = a.getNumber() + 1;
 
-    Game game;
-    game.run();
+    //Game game;
+    //game.run();
+
+    std::shared_ptr<GameEngine> game = std::make_shared<GameEngine>("assetsConfig.txt");
+    game->run();
 
 
     return 0;

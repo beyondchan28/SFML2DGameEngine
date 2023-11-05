@@ -22,7 +22,7 @@ protected:
 public:
     Scene_Menu(GameEngine * gameEngine = nullptr);
     void sRender();
-    void sDoAction();
+//    void doAction(const Action& action);
 
 };
 

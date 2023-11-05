@@ -493,7 +493,7 @@
 	<memory>
 	"Entity.h"
 
-1698506058 source:e:\cppproject\sfmlgame\game.cpp
+1698828049 source:e:\cppproject\sfmlgame\game.cpp
 	"Game.h"
 	<iostream>
 	"Entity.h"
@@ -515,8 +515,8 @@
 	"Action.h"
 	"Assets.h"
 
-1698496602 source:e:\cppproject\sfmlgame\main.cpp
-	"Game.h"
+1698997202 source:e:\cppproject\sfmlgame\main.cpp
+	"GameEngine.h"
 	<SFML/Window.hpp>
 	<SFML/Graphics.hpp>
 	<iostream>
@@ -952,10 +952,10 @@
 1696753541 e:\cppproject\sfmlgame\action.h
 	<iostream>
 
-1696753456 source:e:\cppproject\sfmlgame\action.cpp
+1699181184 source:e:\cppproject\sfmlgame\action.cpp
 	"Action.h"
 
-1698158450 e:\cppproject\sfmlgame\assets.h
+1699086267 e:\cppproject\sfmlgame\assets.h
 	"SFML/Graphics.hpp"
 	"SFML/Audio.hpp"
 	"Animation.h"
@@ -1065,10 +1065,11 @@
 	<SFML/Audio/Export.hpp>
 	<string>
 
-1698158493 source:e:\cppproject\sfmlgame\assets.cpp
+1699086267 source:e:\cppproject\sfmlgame\assets.cpp
 	"Assets.h"
 	"SFML/Audio.hpp"
 	<iostream>
+	<fstream>
 	<memory>
 
 1698505936 source:e:\cppproject\sfmlgame\animation.cpp
@@ -1082,4 +1083,35 @@
 	<memory>
 	"SFML/Graphics.hpp"
 	"Vec2.h"
+
+1699086543 e:\cppproject\sfmlgame\gameengine.h
+	"Assets.h"
+	<memory>
+	"Scene.h"
+
+1699176693 e:\cppproject\sfmlgame\scene.h
+	"Action.h"
+	"EntityManager.h"
+	"GameEngine.h"
+	<memory>
+
+1699180537 source:e:\cppproject\sfmlgame\scene.cpp
+	"Scene.h"
+	"GameEngine.h"
+
+1699180722 source:e:\cppproject\sfmlgame\gameengine.cpp
+	"GameEngine.h"
+	"Scene_Menu.h"
+	"Action.h"
+	<fstream>
+
+1699180434 e:\cppproject\sfmlgame\scene_menu.h
+	"Scene.h"
+	<map>
+	<memory>
+	<deque>
+
+1699183515 source:e:\cppproject\sfmlgame\scene_menu.cpp
+	"Scene_Menu.h"
+	"Scene.h"
 

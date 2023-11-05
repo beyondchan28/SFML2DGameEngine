@@ -20,6 +20,11 @@ runtime bug :
 - pure virtual method called terminate called without an active exception ()
 - at creating the small enemies ()
 
+bug :
+- the GameEngine object didnt get recognized on the scene class(X)
+    + there is something to do with unimplented virtual/abstract function from the derived class
+    + read more about how to inheritance works under the hood
+
 todo:
 - Action class and input map (X)
 - Entity and new Component interface (X)

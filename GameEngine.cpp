@@ -1,4 +1,5 @@
 #include "GameEngine.h"
+#include "Scene_Menu.h"
 #include "Action.h"
 #include <fstream>
 
@@ -33,12 +34,32 @@ sf::RenderWindow & GameEngine::window()
     return m_window;
 }
 
+const Assets & GameEngine::assets() const
+{
+    return m_assets;
+}
+
+Assets & GameEngine::assets()
+{
+    return m_assets;
+}
+
 void GameEngine::run()
 {
     while(isRunning())
     {
+        if (!isRunning())
+        {
+            m_window.close();
+        }
         update();
+        sUserInput();
     }
+}
+
+void GameEngine::quit()
+{
+    m_window.close();
 }
 
 void GameEngine::sUserInput()
@@ -57,9 +78,9 @@ void GameEngine::sUserInput()
         if(event.type == sf::Event::KeyPressed || sf::Event::KeyReleased)
         {
             // action
-            if(getActionMap().find(event.key.code) == getActionMap().end()) { continue; };
+            if(currentScene()->getActionMap().find(event.key.code) == currentScene()->getActionMap().end()) { continue; };
             const std::string actionType = (event.type == sf::Event::KeyPressed) ? "START" : "END";
-            doAction(Action(getActionMap().at(event.key.code), actionType));
+            currentScene()->sDoAction(Action(currentScene()->getActionMap().at(event.key.code), actionType));
 
         }
 
@@ -67,7 +88,29 @@ void GameEngine::sUserInput()
 
 }
 
-void GameEngine::changeScene(const std::string & sceneName, std::shared_ptr<Scene> scene, bool currentScene = false )
+void GameEngine::changeScene(const std::string & sceneName, std::shared_ptr<Scene> scene, bool endCurrentScene)
 {
+    if (endCurrentScene == false)
+    {
+        if (m_sceneMap.count(sceneName) == 0)
+        {
+            m_sceneMap.insert(std::pair<std::string, std::shared_ptr<Scene>>(sceneName, scene));
+        }
 
+        m_currentScene = sceneName;
+        std::cout << m_sceneMap.count(sceneName) << "\n";
+    }
+}
+
+void GameEngine::update()
+{
+    window().clear(sf::Color::Black);
+
+    sUserInput();
+
+    //loop all the systems here
+    currentScene()->update();
+
+
+    window().display();
 }
