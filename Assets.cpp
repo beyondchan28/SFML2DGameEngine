@@ -1,5 +1,5 @@
 #include "Assets.h"
-#include "SFML/Audio.hpp"
+#include "Animation.h"
 #include <iostream>
 #include <fstream>
 #include <memory>
@@ -11,6 +11,7 @@ SoundBufferVec m_soundBufferVec;
 struct AssetsConf
 {
     std::string name, path;
+    size_t frameCount, animationSpeed;
 };
 
 struct AssetsConf assetConf;
@@ -42,6 +43,17 @@ void Assets::loadFromFile(const std::string & path)
             inputFile >> assetConf.name >> assetConf.path;
             addFont(assetConf.name, assetConf.path);
             std::cout << assetConf.name << "Load \n";
+
+        }
+        else if (firstWordInLine == "Animation")
+        {
+            inputFile >> assetConf.name >> assetConf.path
+                     >> assetConf.frameCount >> assetConf.animationSpeed;
+            // this might fail because there is another constructor just consist of 2 params
+            Animation anim(assetConf.name, getTexture(assetConf.path), assetConf.frameCount, assetConf.animationSpeed);
+            addAnimation(assetConf.name, anim);
+            std::cout << assetConf.name << "Load \n";
+
 
         }
 

@@ -21,6 +21,7 @@ void GameEngine::init(const std::string & path)
 
 std::shared_ptr<Scene> GameEngine::currentScene()
 {
+    //std::cout << m_currentScene << "\n";
     return m_sceneMap[m_currentScene];
 }
 
@@ -48,12 +49,7 @@ void GameEngine::run()
 {
     while(isRunning())
     {
-        if (!isRunning())
-        {
-            m_window.close();
-        }
         update();
-        sUserInput();
     }
 }
 
@@ -98,7 +94,7 @@ void GameEngine::changeScene(const std::string & sceneName, std::shared_ptr<Scen
         }
 
         m_currentScene = sceneName;
-        std::cout << m_sceneMap.count(sceneName) << "\n";
+
     }
 }
 

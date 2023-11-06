@@ -13,7 +13,7 @@ class Scene
 {
 protected:
     GameEngine * m_game = nullptr;
-    EntityManager m_entities;
+    EntityManager m_entityManager;
     ActionMap m_actionMap;
     bool m_paused = false;
     bool m_hasEnded = false;
@@ -33,13 +33,13 @@ public:
 //    virtual void doAction(const Action & action) = 0; //dont need this for now
     //void simulate(const size_t frames);
     void registerAction(sf::Keyboard::Key inputKey, const std::string & actionName);
+    const ActionMap & getActionMap() const;
 
     //size_t width();
     //size_t height();
     //size_t currentFrame();
 
    // bool hasEnded() const;
-    const ActionMap & getActionMap() const;
    // void drawLine(const Vec2 & p1, const Vec2 & p2);
 
 };

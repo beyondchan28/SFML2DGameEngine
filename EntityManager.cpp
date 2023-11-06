@@ -13,9 +13,9 @@ EntityManager::EntityManager()
     EntityVec bullet;
 
     m_entityMap.insert(std::pair<std::string, EntityVec>("Player", player));
-    m_entityMap.insert(std::pair<std::string, EntityVec>("Enemy", enemy));
-    m_entityMap.insert(std::pair<std::string, EntityVec>("SmallEnemy", enemy));
-    m_entityMap.insert(std::pair<std::string, EntityVec>("Bullet", bullet));
+//    m_entityMap.insert(std::pair<std::string, EntityVec>("Enemy", enemy));
+//    m_entityMap.insert(std::pair<std::string, EntityVec>("SmallEnemy", enemy));
+//    m_entityMap.insert(std::pair<std::string, EntityVec>("Bullet", bullet));
 }
 
 void EntityManager::update()
