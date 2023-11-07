@@ -28,6 +28,13 @@ void Scene_Play::init(const std::string & levelPath)
     registerAction(sf::Keyboard::A, "LEFT");
     registerAction(sf::Keyboard::D, "RIGHT");
 
+    auto & assets = m_game->assets();
+
+    m_gridText.setFont(assets.getFont("fontName"));
+    m_gridText.setCharacterSize(8);
+    m_gridText.setFillColor(sf::Color::White);
+//    m_gridText.setStyle(sf::Text::Bold);
+
     loadLevel(levelPath);
 }
 
@@ -75,14 +82,22 @@ void Scene_Play::spawnPlayer()
     player->addComponent<CAnimation>();
 
     m_player = player;
-    std::cout << m_entityManager.getEntities("Player")[0]->tag() << "\n";
+//    std::cout << m_entityManager.getEntities("Player")[0]->tag() << "\n";
 }
 
 void Scene_Play::update()
 {
+    m_entityManager.update();
 
-    sAnimation();
+    if(!m_paused)
+    {
+        sAnimation();
+
+    }
+
     sRender();
+
+    currentFrame++;
 }
 
 void Scene_Play::sRender()
@@ -100,22 +115,23 @@ void Scene_Play::sRender()
     //this loop somehow not working
     for (auto& e : m_entityManager.getEntities("Player"))
     {
-        std::cout << "loop on sRender " << "\n";
-        auto & entityPosX = e->getComponent<CTransform>().pos.x;
-        auto & entityPosY = e->getComponent<CTransform>().pos.y;
-        e->getComponent<CShape>().circle.setPosition(entityPosX, entityPosY);
-        e->getComponent<CShape>().circle.setRotation(45.0f);
-        //e->getComponent<CTransform>().angle += 1.0f;
-        //e->getComponent<CShape>().circle.setRotation(e->getComponent<CTransform>().angle);
         if (e->hasComponent<CAnimation>())
         {
-            e->getComponent<CAnimation>().animation.getSprite().setPosition(entityPosX, entityPosY);
-            m_game->window().draw(e->getComponent<CAnimation>().animation.getSprite());
-            std::cout << "calling from here " +  e->getComponent<CAnimation>().animation.getName() << "\n";
+            drawCollision(e, m_drawCollision);
+
+            if (m_drawTextures)
+            {
+                auto & entityPosX = e->getComponent<CTransform>().pos.x;
+                auto & entityPosY = e->getComponent<CTransform>().pos.y;
+                e->getComponent<CAnimation>().animation.getSprite().setPosition(entityPosX, entityPosY);
+                m_game->window().draw(e->getComponent<CAnimation>().animation.getSprite());
+            }
+
         }
 
-        m_game->window().draw(e->getComponent<CShape>().circle);
     }
+
+    drawGrid(m_drawGrid);
 }
 
 void Scene_Play::sDoAction(const Action & action)
@@ -125,6 +141,22 @@ void Scene_Play::sDoAction(const Action & action)
         if(action.name() == "QUIT")
         {
             onEnd();
+        }
+        else if (action.name() == "PAUSE")
+        {
+            m_paused = (m_paused == true) ? false : true;
+        }
+        else if (action.name() == "TOGGLE_COLLISION")
+        {
+            m_drawCollision = (m_drawCollision == true) ? false : true;
+        }
+        else if (action.name() == "TOGGLE_TEXTURE")
+        {
+            m_drawTextures= (m_drawTextures == true) ? false : true;
+        }
+        else if (action.name() == "TOGGLE_GRID")
+        {
+            m_drawGrid = (m_drawGrid == true) ? false : true;
         }
 
 
@@ -191,4 +223,53 @@ void Scene_Play::sAnimation()
 void Scene_Play::onEnd()
 {
     m_game->changeScene("MENU", std::make_shared<Scene_Menu>(m_game));
+}
+
+void Scene_Play::drawCollision(std::shared_ptr<Entity> e, bool draw)
+{
+    if (draw)
+    {
+        auto & entityPosX = e->getComponent<CTransform>().pos.x;
+        auto & entityPosY = e->getComponent<CTransform>().pos.y;
+
+        e->getComponent<CShape>().circle.setPosition(entityPosX, entityPosY);
+        e->getComponent<CShape>().circle.setRotation(45.0f);
+        //e->getComponent<CTransform>().angle += 1.0f;
+        //e->getComponent<CShape>().circle.setRotation(e->getComponent<CTransform>().angle);
+        m_game->window().draw(e->getComponent<CShape>().circle);
+    }
+}
+
+void Scene_Play::drawGrid(bool draw)
+{
+    if (draw)
+    {
+        const size_t & windowWidth = m_game->window().getSize().x;
+        const size_t & windowHeight = m_game->window().getSize().y;
+        for(float i = 64; i <= (float) windowWidth; i += 64 )
+        {
+            for(float j = 64; j <= (float) windowHeight; j += 64)
+            {
+                //vertical line
+                sf::Vertex vertLine[] =
+                {
+                    sf::Vertex(sf::Vector2f(i-1.0f, 0)),
+                    sf::Vertex(sf::Vector2f(i-1.0f, (float)windowHeight))
+                };
+                m_game->window().draw(vertLine, 2, sf::Lines);
+
+                //horizontal line
+                sf::Vertex horizLine[] =
+                {
+                    sf::Vertex(sf::Vector2f(0, j-1.0f)),
+                    sf::Vertex(sf::Vector2f((float) windowWidth, j-1.0f))
+                };
+                m_game->window().draw(horizLine, 2, sf::Lines);
+
+                m_gridText.setString("(" + std::to_string( (int) i ) + "," + std::to_string( (int)  j ) + ")" );
+                m_gridText.setPosition(i - 64.0f, j - 64.0f);
+                m_game->window().draw(m_gridText);
+            }
+        }
+    }
 }

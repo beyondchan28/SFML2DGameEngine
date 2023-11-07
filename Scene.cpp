@@ -20,15 +20,15 @@ void Scene::registerAction(sf::Keyboard::Key inputKey, const std::string & actio
     m_actionMap.insert(std::pair<sf::Keyboard::Key, std::string>(inputKey, actionName));
 }
 
-//size_t Scene::width()
-//{
-//
-//}
+size_t Scene::width()
+{
 
-//size_t Scene::height()
-//{
-//
-//}
+}
+
+size_t Scene::height()
+{
+
+}
 
 const ActionMap & Scene::getActionMap() const
 {

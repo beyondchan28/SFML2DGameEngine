@@ -26,18 +26,22 @@ bug :
     + read more about how to inheritance works under the hood
 
 todo:
+- Cleaning the code, remove unncessary imports and others ()
 - Action class and input map (X)
 - Entity and new Component interface (X)
 - Assets class (X)
 - change all entity's visual with texture ()
-- rectangular collision shape ()
+- rectangular collision shape (X)
 - seperate the physics/collison detection into different class (X)
 - Animation system (X)
-- Debug mode ()
+- Debug mode (X)
+    + Collision visual working, but need to determine based on the CCollision component (?)
 - Platformer physics ()
 - Game Engine class, Scene Base class and Scene class (X)
     + test the integration of Scene and GameEngine by displaying Scene_Menu
-- The Entity not rendered at all ()
-    + EntityManager failed to work properly
+- The Entity not rendered at all (X)
+    + EntityManager failed to work properly ( forgor to adding update function on gameLoop)
+- Found the used of simulate, widht, height, and currentFrame functions ()
+- Implementing Grid Map ()
     
     

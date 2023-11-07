@@ -36,6 +36,8 @@ void Scene_Menu::init()
 void Scene_Menu::update()
 {
     sRender();
+
+    currentFrame++;
 }
 
 void Scene_Menu::sRender()

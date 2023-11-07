@@ -40,7 +40,8 @@ protected:
 
     void onEnd();
 
-
+    void drawCollision(std::shared_ptr<Entity> e, bool draw);
+    void drawGrid(bool draw);
 
 public:
     Scene_Play(GameEngine * gameEngine, const std::string & levelPath);
