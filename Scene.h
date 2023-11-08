@@ -35,11 +35,11 @@ public:
     void registerAction(sf::Keyboard::Key inputKey, const std::string & actionName);
     const ActionMap & getActionMap() const;
 
-    size_t width();
-    size_t height();
+    size_t windowWidth();
+    size_t windowHeight();
 //    size_t currentFrame();
 
    // bool hasEnded() const;
-   // void drawLine(const Vec2 & p1, const Vec2 & p2);
+    void drawLine(const Vec2 & p1, const Vec2 & p2);
 
 };

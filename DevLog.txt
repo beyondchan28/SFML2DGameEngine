@@ -1,3 +1,5 @@
+***DEADLINE next week, platformer game done***
+
 need to read more
 - pass by value vs pass by reference (X)
 - find out about whats the usage of tag, active and id variable
@@ -34,14 +36,18 @@ todo:
 - rectangular collision shape (X)
 - seperate the physics/collison detection into different class (X)
 - Animation system (X)
-- Debug mode (X)
-    + Collision visual working, but need to determine based on the CCollision component (?)
+- Debug mode ()
+    + Collision visual working, but need to determine based on the CCollision component 
+    + The grid should relative to the View/Camera 
 - Platformer physics ()
 - Game Engine class, Scene Base class and Scene class (X)
     + test the integration of Scene and GameEngine by displaying Scene_Menu
 - The Entity not rendered at all (X)
     + EntityManager failed to work properly ( forgor to adding update function on gameLoop)
-- Found the used of simulate, widht, height, and currentFrame functions ()
+- Found the used of simulate, width, height, and currentFrame functions ()
+    + simulate is for ghost/replay mechanic (?)
 - Implementing Grid Map ()
+    + the Dec entity bugged. not in placed properly and the image got cut in half
+- Implement View/Camera ()
     
     

@@ -42,6 +42,7 @@ void Scene_Menu::update()
 
 void Scene_Menu::sRender()
 {
+    m_game->window().clear(sf::Color::Black);
     std::string levelName = m_menuStrings[m_selectedMenuIndex];
     m_game->window().draw(m_menuText);
 

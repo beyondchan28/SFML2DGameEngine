@@ -61,6 +61,30 @@ void Scene_Play::loadConfigFile(const std::string & fileName)
                         m_playerConfig.outlineColorRed >> m_playerConfig.outlineColorGreen >> m_playerConfig.outlineColorBlue >>
                         m_playerConfig.outlineThickness >> m_playerConfig.shapeVertices;
         }
+        else if (firstWordInLine == "Tile")
+        {
+            std::string name, entityType;
+            float gridX, gridY;
+            bool animate;
+
+            entityType = firstWordInLine;
+
+            inputFile >> name >> gridX >> gridY >> animate;
+            settingUpStaticEntity(entityType, name, gridX, gridY, animate);
+
+        }
+        else if (firstWordInLine == "Dec")
+        {
+            std::string name, entityType;
+            float gridX, gridY;
+            bool animate;
+
+            entityType = firstWordInLine;
+
+            inputFile >> name >> gridX >> gridY >> animate;
+            settingUpStaticEntity(entityType, name, gridX, gridY, animate);
+
+        }
     }
 }
 
@@ -102,6 +126,16 @@ void Scene_Play::update()
 
 void Scene_Play::sRender()
 {
+    m_game->window().clear(sf::Color::Blue);
+    //implement set the window to be darker if it paused
+
+    //Centered view/camera if player going right enough
+    auto & pPos = m_player->getComponent<CTransform>().pos;
+    float windowCenterX = std::max(m_game->window().getSize().x / 2.0f, pPos.x );
+    sf::View view = m_game->window().getView();
+    view.setCenter(windowCenterX, m_game->window().getSize().y - view.getCenter().y);
+    m_game->window().setView(view);
+
     sf::Text levelText;
     levelText.setFont(m_game->assets().getFont("fontName"));
     levelText.setCharacterSize(24);
@@ -113,7 +147,7 @@ void Scene_Play::sRender()
 
 
     //this loop somehow not working
-    for (auto& e : m_entityManager.getEntities("Player"))
+    for (auto& e : m_entityManager.getEntities())
     {
         if (e->hasComponent<CAnimation>())
         {
@@ -123,6 +157,7 @@ void Scene_Play::sRender()
             {
                 auto & entityPosX = e->getComponent<CTransform>().pos.x;
                 auto & entityPosY = e->getComponent<CTransform>().pos.y;
+
                 e->getComponent<CAnimation>().animation.getSprite().setPosition(entityPosX, entityPosY);
                 m_game->window().draw(e->getComponent<CAnimation>().animation.getSprite());
             }
@@ -225,6 +260,39 @@ void Scene_Play::onEnd()
     m_game->changeScene("MENU", std::make_shared<Scene_Menu>(m_game));
 }
 
+void Scene_Play::settingUpStaticEntity(std::string entityType, std::string name, float gridX, float gridY, bool animate)
+{
+    Animation anim(name, m_game->assets().getTexture(name), animate);
+
+    auto staticEntity = m_entityManager.addEntity(entityType);
+    staticEntity->addComponent<CAnimation>(anim, false);
+    Vec2 posToPlaced = gridToMidPixel(gridX, gridY, staticEntity);
+    staticEntity->addComponent<CTransform>(posToPlaced);
+
+}
+
+//its used to get position to be placed on the grid
+Vec2 Scene_Play::gridToMidPixel(float gridX, float gridY, std::shared_ptr<Entity> entity)
+{
+    if (entity->hasComponent<CAnimation>())
+    {
+        auto textureSize = entity->getComponent<CAnimation>().animation.getSize();
+
+        float halfWidthTexture = textureSize.x / 2;
+        float halfHeightexture = textureSize.y / 2;
+
+        float xPlacePos = halfWidthTexture + gridX * m_gridSize.x;
+        float yPlacePos =(float)windowHeight() - (halfWidthTexture + gridY * m_gridSize.y);
+
+        return Vec2(xPlacePos, yPlacePos);
+    }
+    else
+    {
+        return Vec2(-0.1f,-0.1f); //means something failed
+    }
+
+}
+
 void Scene_Play::drawCollision(std::shared_ptr<Entity> e, bool draw)
 {
     if (draw)
@@ -244,32 +312,29 @@ void Scene_Play::drawGrid(bool draw)
 {
     if (draw)
     {
-        const size_t & windowWidth = m_game->window().getSize().x;
-        const size_t & windowHeight = m_game->window().getSize().y;
-        for(float i = 64; i <= (float) windowWidth; i += 64 )
+        float leftX = m_game->window().getView().getCenter().x - windowWidth() / 2;
+        float rightX = leftX + windowWidth() + m_gridSize.x;
+        float nextGridX = leftX - ((int)leftX % (int)m_gridSize.x);
+
+        for(float x = nextGridX; x < rightX; x += m_gridSize.x )
         {
-            for(float j = 64; j <= (float) windowHeight; j += 64)
+
+            for(float y = 0; y < (float)windowHeight(); y += m_gridSize.y)
             {
                 //vertical line
-                sf::Vertex vertLine[] =
-                {
-                    sf::Vertex(sf::Vector2f(i-1.0f, 0)),
-                    sf::Vertex(sf::Vector2f(i-1.0f, (float)windowHeight))
-                };
-                m_game->window().draw(vertLine, 2, sf::Lines);
+                drawLine(Vec2(x, 0), Vec2(x, (float)windowHeight()));
+
 
                 //horizontal line
-                sf::Vertex horizLine[] =
-                {
-                    sf::Vertex(sf::Vector2f(0, j-1.0f)),
-                    sf::Vertex(sf::Vector2f((float) windowWidth, j-1.0f))
-                };
-                m_game->window().draw(horizLine, 2, sf::Lines);
+                drawLine(Vec2(leftX, (float)windowHeight() - y), Vec2(rightX, (float)windowHeight() - y));
 
-                m_gridText.setString("(" + std::to_string( (int) i ) + "," + std::to_string( (int)  j ) + ")" );
-                m_gridText.setPosition(i - 64.0f, j - 64.0f);
+                std::string xCell = std::to_string( (int)x / (int)m_gridSize.x);
+                std::string yCell = std::to_string( (int)y / (int)m_gridSize.y );
+                m_gridText.setString("(" + xCell + "," + yCell+ ")" );
+                m_gridText.setPosition(x + 3.0f, (float)windowHeight() - y - m_gridSize.y + 2.0f);
                 m_game->window().draw(m_gridText);
             }
         }
+
     }
 }

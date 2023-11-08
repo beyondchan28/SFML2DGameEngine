@@ -12,6 +12,7 @@ struct AssetsConf
 {
     std::string name, path;
     size_t frameCount, animationSpeed;
+    bool animate;
 };
 
 struct AssetsConf assetConf;
@@ -48,15 +49,14 @@ void Assets::loadFromFile(const std::string & path)
         else if (firstWordInLine == "Animation")
         {
             inputFile >> assetConf.name >> assetConf.path
-                     >> assetConf.frameCount >> assetConf.animationSpeed;
-            // this might fail because there is another constructor just consist of 2 params
-            Animation anim(assetConf.name, getTexture(assetConf.path), assetConf.frameCount, assetConf.animationSpeed);
+                     >> assetConf.frameCount >> assetConf.animationSpeed
+                     >> assetConf.animate;
+            Animation anim(assetConf.name, getTexture(assetConf.path), assetConf.frameCount, assetConf.animationSpeed, assetConf.animate);
             addAnimation(assetConf.name, anim);
             std::cout << assetConf.name << "Load \n";
 
 
         }
-
     }
 }
 

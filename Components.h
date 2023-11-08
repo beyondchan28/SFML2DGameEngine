@@ -114,7 +114,7 @@ class CAnimation : public Component
 {
 public:
     Animation animation;
-    bool repeat = false;
+    bool repeat = false; //what is this used for ?
     CAnimation(){};
     CAnimation(const Animation & a, bool r): animation{a}, repeat(r) {};
 

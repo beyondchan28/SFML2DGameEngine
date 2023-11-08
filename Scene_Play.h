@@ -2,6 +2,7 @@
 
 #include "Scene.h"
 #include "EntityManager.h"
+#include "Vec2.h"
 #include <map>
 #include <memory>
 
@@ -39,6 +40,10 @@ protected:
     void sMovement();
 
     void onEnd();
+
+    void settingUpStaticEntity(std::string entityType, std::string name, float gridX, float gridY, bool animate);
+
+    Vec2 gridToMidPixel(float gridX, float gridY, std::shared_ptr<Entity> entity);
 
     void drawCollision(std::shared_ptr<Entity> e, bool draw);
     void drawGrid(bool draw);

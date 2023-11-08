@@ -8,8 +8,6 @@ Scene::Scene(GameEngine * gameEngine)
 {
 }
 
-
-
 //void Scene::simulate(const size_t frames)
 //{
 //
@@ -20,14 +18,14 @@ void Scene::registerAction(sf::Keyboard::Key inputKey, const std::string & actio
     m_actionMap.insert(std::pair<sf::Keyboard::Key, std::string>(inputKey, actionName));
 }
 
-size_t Scene::width()
+size_t Scene::windowWidth()
 {
-
+    return m_game->window().getSize().x;
 }
 
-size_t Scene::height()
+size_t Scene::windowHeight()
 {
-
+    return m_game->window().getSize().y;
 }
 
 const ActionMap & Scene::getActionMap() const
@@ -40,3 +38,12 @@ const ActionMap & Scene::getActionMap() const
 //    return m_hasEnded;
 //}
 
+void Scene::drawLine(const Vec2 & p1, const Vec2 & p2)
+{
+    sf::Vertex line[] =
+    {
+        sf::Vertex(sf::Vector2f(p1.x, p1.y)),
+        sf::Vertex(sf::Vector2f(p2.x, p2.y))
+    };
+    m_game->window().draw(line, 2, sf::Lines);
+}

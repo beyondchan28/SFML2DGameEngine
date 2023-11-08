@@ -13,7 +13,7 @@ void GameEngine::init(const std::string & path)
 {
     m_assets.loadFromFile(path);
 
-    m_window.create(sf::VideoMode(1280, 720), "Game Engine ?");
+    m_window.create(sf::VideoMode(800, 600), "Game Engine ?");
     m_window.setFramerateLimit(60);
 
     changeScene("MENU", std::make_shared<Scene_Menu>(this));
@@ -99,7 +99,6 @@ void GameEngine::changeScene(const std::string & sceneName, std::shared_ptr<Scen
 
 void GameEngine::update()
 {
-    window().clear(sf::Color::Black);
 
     sUserInput();
 
