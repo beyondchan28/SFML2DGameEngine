@@ -40,14 +40,18 @@ todo:
     + Collision visual working, but need to determine based on the CCollision component 
     + The grid should relative to the View/Camera 
 - Platformer physics ()
+    + gravity
+    + AABB collision
+- Movement system ()
+    + state changes
 - Game Engine class, Scene Base class and Scene class (X)
     + test the integration of Scene and GameEngine by displaying Scene_Menu
 - The Entity not rendered at all (X)
     + EntityManager failed to work properly ( forgor to adding update function on gameLoop)
 - Found the used of simulate, width, height, and currentFrame functions ()
     + simulate is for ghost/replay mechanic (?)
-- Implementing Grid Map ()
-    + the Dec entity bugged. not in placed properly and the image got cut in half
+- Implementing Grid Map (X)
+    + the Dec entity bugged. not in placed properly and the image got cut in half (X)
 - Implement View/Camera ()
     
     

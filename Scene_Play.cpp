@@ -268,7 +268,6 @@ void Scene_Play::settingUpStaticEntity(std::string entityType, std::string name,
     staticEntity->addComponent<CAnimation>(anim, false);
     Vec2 posToPlaced = gridToMidPixel(gridX, gridY, staticEntity);
     staticEntity->addComponent<CTransform>(posToPlaced);
-
 }
 
 //its used to get position to be placed on the grid
@@ -282,7 +281,7 @@ Vec2 Scene_Play::gridToMidPixel(float gridX, float gridY, std::shared_ptr<Entity
         float halfHeightexture = textureSize.y / 2;
 
         float xPlacePos = halfWidthTexture + gridX * m_gridSize.x;
-        float yPlacePos =(float)windowHeight() - (halfWidthTexture + gridY * m_gridSize.y);
+        float yPlacePos =(float)windowHeight() - (halfHeightexture + gridY * m_gridSize.y);
 
         return Vec2(xPlacePos, yPlacePos);
     }
