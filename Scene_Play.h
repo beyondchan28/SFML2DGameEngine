@@ -3,6 +3,7 @@
 #include "Scene.h"
 #include "EntityManager.h"
 #include "Vec2.h"
+#include "Physics.h"
 #include <map>
 #include <memory>
 
@@ -26,6 +27,10 @@ protected:
     const Vec2 m_gridSize = {64, 64};
     sf::Text m_gridText;
 
+    Physics m_physics;
+    bool m_useGravity = true;;
+
+
     struct PlayerConfig m_playerConfig;
 
     void init(const std::string & levelPath);
@@ -38,6 +43,8 @@ protected:
     void sAnimation();
     void sRender();
     void sMovement();
+    void sGravity();
+    void sCollision();
 
     void onEnd();
 

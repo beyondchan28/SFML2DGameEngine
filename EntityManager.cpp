@@ -51,8 +51,9 @@ void EntityManager::removeDeadEntities(EntityVec & vec)
     {
         //delete from the vector/list
         vec.erase(
-        std::remove_if(vec.begin(), vec.end(), [](std::shared_ptr<Entity> const &  i) {
-                       return !i->isActive();
+        std::remove_if(vec.begin(), vec.end(), [](std::shared_ptr<Entity> const &  i)
+                       {
+                            return !i->isActive();
                        }),
         vec.end()
         );

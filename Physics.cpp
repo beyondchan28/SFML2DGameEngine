@@ -19,41 +19,42 @@ Vec2 Physics::getOverlap(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b) c
 
     if (a->hasComponent<CBoundingBox>() && b->hasComponent<CBoundingBox>())
     {
-        Vec2 & aOrigin= a->getComponent<CBoundingBox>().halfSize;
-        Vec2 & bOrigin= b->getComponent<CBoundingBox>().halfSize;
+        Vec2 & aHalfSize= a->getComponent<CBoundingBox>().halfSize;
+        Vec2 & bHalfSize= b->getComponent<CBoundingBox>().halfSize;
 
         Vec2 & aPos = a->getComponent<CTransform>().pos;
         Vec2 & bPos = b->getComponent<CTransform>().pos;
 
-        float dx = std::abs((aPos.x + aOrigin.x) - (bPos.x + bOrigin.x));
-        float dy = std::abs((aPos.y + aOrigin.y) - (bPos.y + bOrigin.y));
+        float dx = std::abs(aPos.x - bPos.x);
+        float dy = std::abs(aPos.y - bPos.y);
 
-        bool xOverlap = dx <= (aOrigin.x + bOrigin.x);
-        bool yOverlap = dy <= (aOrigin.y + bOrigin.y);
+        float ox = (aPos.x) + (bPos.x ) - dx;
+        float oy = (aPos.y) + (bPos.y ) - dy;
 
-        //std::cout << dx << "\n";
-        //std::cout << dy << "\n";
+        overlap = Vec2(ox, oy);
 
-        //if both is positive : means overlap
-        if (xOverlap && yOverlap)
+
+        if (oy >= (bHalfSize.y + std::abs(bPos.y)) && oy <= (bHalfSize.y + std::abs(bPos.y)))
         {
-
-            std::cout << "Overlap" << "\n";
-            //overlap.x = xAxisOverlap;
-            //overlap.y = yAxisOverlap;
-        }
-        else
-        {
-            std::cout << "No Overlap" << "\n";
+            std::cout << "???" << "\n";
 
         }
+//        std::cout << overlap.x << "," << overlap.y << "\n";
+//        std::cout << dy << "\n";
 
     }
 
     return overlap;
 }
 
+
+
 Vec2 Physics::getPreviousOverlap(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b)
 {
     return Vec2(0,0);
+}
+
+bool Physics::isOverlap(Vec2 overlap)
+{
+    return ((overlap.x > 0.0f) && (overlap.y > 0.0f));
 }

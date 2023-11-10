@@ -39,7 +39,7 @@ public:
     size_t windowHeight();
 //    size_t currentFrame();
 
-   // bool hasEnded() const;
+    bool hasEnded() const; // for deleting scene
     void drawLine(const Vec2 & p1, const Vec2 & p2);
 
 };

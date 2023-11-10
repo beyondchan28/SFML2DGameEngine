@@ -97,6 +97,17 @@ void GameEngine::changeScene(const std::string & sceneName, std::shared_ptr<Scen
     }
 }
 
+void GameEngine::deleteScene()
+{
+    for(auto & [nameScene, scenePointer] : m_sceneMap)
+    {
+        if(scenePointer->hasEnded())
+        {
+            m_sceneMap.erase(nameScene);
+        }
+    }
+}
+
 void GameEngine::update()
 {
 
@@ -107,4 +118,6 @@ void GameEngine::update()
 
 
     window().display();
+
+    deleteScene();
 }

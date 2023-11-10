@@ -43,6 +43,8 @@ todo:
     + gravity
     + AABB collision
 - Movement system ()
+    + use velocity, dont directly interact to the position
+
     + state changes
 - Game Engine class, Scene Base class and Scene class (X)
     + test the integration of Scene and GameEngine by displaying Scene_Menu
@@ -53,5 +55,6 @@ todo:
 - Implementing Grid Map (X)
     + the Dec entity bugged. not in placed properly and the image got cut in half (X)
 - Implement View/Camera ()
+- reset the state of the scene.
     
     

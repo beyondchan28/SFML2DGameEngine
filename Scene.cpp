@@ -33,10 +33,10 @@ const ActionMap & Scene::getActionMap() const
     return m_actionMap;
 }
 
-//bool Scene::hasEnded() const
-//{
-//    return m_hasEnded;
-//}
+bool Scene::hasEnded() const
+{
+    return m_hasEnded;
+}
 
 void Scene::drawLine(const Vec2 & p1, const Vec2 & p2)
 {

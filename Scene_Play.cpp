@@ -104,6 +104,7 @@ void Scene_Play::spawnPlayer()
     player->addComponent<CBoundingBox>( size );
     player->addComponent<CState>("idle");
     player->addComponent<CAnimation>();
+    player->addComponent<CGravity>(10.0f);
 
     m_player = player;
 //    std::cout << m_entityManager.getEntities("Player")[0]->tag() << "\n";
@@ -115,6 +116,9 @@ void Scene_Play::update()
 
     if(!m_paused)
     {
+        sCollision();
+        if (m_useGravity) {sGravity();}
+
         sAnimation();
 
     }
@@ -255,8 +259,38 @@ void Scene_Play::sAnimation()
     }
 }
 
+void Scene_Play::sCollision()
+{
+    for(auto & t : m_entityManager.getEntities("Tile"))
+    {
+       Vec2 overlapPos =  m_physics.getOverlap(m_player, t);
+       bool isOverlap = m_physics.isOverlap(overlapPos);
+
+//       if(isOverlap)
+//       {
+//           m_useGravity = false;
+//           std::cout << "overlap" << "\n";
+//       }
+    }
+}
+
+void Scene_Play::sGravity()
+{
+    for(auto & e: m_entityManager.getEntities())
+    {
+        if(e->hasComponent<CGravity>())
+        {
+            float & ePosY = e->getComponent<CTransform>().pos.y;
+            float & gravity = e->getComponent<CGravity>().gravity;
+            ePosY += std::clamp(ePosY, 0.0f, gravity);
+//            std::cout << ePosY << "\n";
+        }
+    }
+}
+
 void Scene_Play::onEnd()
 {
+    m_hasEnded = true;
     m_game->changeScene("MENU", std::make_shared<Scene_Menu>(m_game));
 }
 
@@ -268,6 +302,12 @@ void Scene_Play::settingUpStaticEntity(std::string entityType, std::string name,
     staticEntity->addComponent<CAnimation>(anim, false);
     Vec2 posToPlaced = gridToMidPixel(gridX, gridY, staticEntity);
     staticEntity->addComponent<CTransform>(posToPlaced);
+
+    if (entityType == "Tile")
+    {
+        Vec2 entitySize = staticEntity->getComponent<CAnimation>().animation.getSize();
+        staticEntity->addComponent<CBoundingBox>(entitySize);
+    }
 }
 
 //its used to get position to be placed on the grid
@@ -284,10 +324,6 @@ Vec2 Scene_Play::gridToMidPixel(float gridX, float gridY, std::shared_ptr<Entity
         float yPlacePos =(float)windowHeight() - (halfHeightexture + gridY * m_gridSize.y);
 
         return Vec2(xPlacePos, yPlacePos);
-    }
-    else
-    {
-        return Vec2(-0.1f,-0.1f); //means something failed
     }
 
 }

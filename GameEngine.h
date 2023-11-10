@@ -28,6 +28,7 @@ protected:
 public:
     GameEngine(const std::string & path); //path for loading config file to loads all the assets
     void changeScene(const std::string & sceneName, std::shared_ptr<Scene> scene, bool endCurrentScene = false);
+    void deleteScene();
 
     void quit();
     void run();
