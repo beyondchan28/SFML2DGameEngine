@@ -13,6 +13,6 @@ public:
     Vec2 getOverlap(std::shared_ptr<Entity> a, const  std::shared_ptr<Entity> b) const;
     Vec2 getPreviousOverlap(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b);
 
-    bool isOverlap(Vec2 overlap);
+    bool isVerticalOverlap(float overlapY);
 
 };

@@ -9,6 +9,7 @@ typedef std::tuple<
             CTransform,
             CLifespan,
             CShape,
+            CRectangle,
             CCollision,
             CInput,
             CBoundingBox,

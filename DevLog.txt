@@ -44,7 +44,6 @@ todo:
     + AABB collision
 - Movement system ()
     + use velocity, dont directly interact to the position
-
     + state changes
 - Game Engine class, Scene Base class and Scene class (X)
     + test the integration of Scene and GameEngine by displaying Scene_Menu

@@ -44,6 +44,23 @@ public:
     }
 };
 
+class CRectangle : public Component
+{
+public:
+    sf::RectangleShape rectangle;
+
+    CRectangle(){}
+    CRectangle(Vec2 rectSize)
+        : rectangle(sf::Vector2f(rectSize.x, rectSize.y))
+    {
+        rectangle.setOutlineColor(sf::Color::White);
+        rectangle.setFillColor(sf::Color(0,0,0,0));
+        rectangle.setOutlineThickness(2);
+        rectangle.setOrigin(rectSize.x / 2.0f, rectSize.y / 2.0f);
+    }
+};
+
+
 class CCollision : public Component
 {
 public:

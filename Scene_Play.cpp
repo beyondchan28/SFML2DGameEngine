@@ -97,7 +97,6 @@ void Scene_Play::spawnPlayer()
                                  sf::Color(m_playerConfig.outlineColorRed, m_playerConfig.outlineColorGreen, m_playerConfig.outlineColorBlue),
                                  m_playerConfig.outlineThickness);
 
-
     //newEntity->addComponent<CCollision>(pConf.collisionRadius);
     player->addComponent<CInput>();
     const Vec2 size = {16.0f, 16.0f};
@@ -105,6 +104,7 @@ void Scene_Play::spawnPlayer()
     player->addComponent<CState>("idle");
     player->addComponent<CAnimation>();
     player->addComponent<CGravity>(10.0f);
+    player->addComponent<CRectangle>(size);
 
     m_player = player;
 //    std::cout << m_entityManager.getEntities("Player")[0]->tag() << "\n";
@@ -150,7 +150,6 @@ void Scene_Play::sRender()
     m_game->window().draw(levelText);
 
 
-    //this loop somehow not working
     for (auto& e : m_entityManager.getEntities())
     {
         if (e->hasComponent<CAnimation>())
@@ -264,13 +263,17 @@ void Scene_Play::sCollision()
     for(auto & t : m_entityManager.getEntities("Tile"))
     {
        Vec2 overlapPos =  m_physics.getOverlap(m_player, t);
-       bool isOverlap = m_physics.isOverlap(overlapPos);
+       bool isVerticalOverlap = m_physics.isVerticalOverlap(overlapPos.y);
 
-//       if(isOverlap)
-//       {
-//           m_useGravity = false;
-//           std::cout << "overlap" << "\n";
-//       }
+       if(isVerticalOverlap)
+       {
+           m_useGravity = false;
+           m_player->getComponent<CTransform>().prevPos = overlapPos;
+
+           //render resolution example, its not working correctly
+           m_player->getComponent<CTransform>().pos.y -= overlapPos.y;
+
+       }
     }
 }
 
@@ -306,7 +309,10 @@ void Scene_Play::settingUpStaticEntity(std::string entityType, std::string name,
     if (entityType == "Tile")
     {
         Vec2 entitySize = staticEntity->getComponent<CAnimation>().animation.getSize();
+
         staticEntity->addComponent<CBoundingBox>(entitySize);
+        staticEntity->addComponent<CRectangle>(entitySize);
+
     }
 }
 
@@ -335,11 +341,14 @@ void Scene_Play::drawCollision(std::shared_ptr<Entity> e, bool draw)
         auto & entityPosX = e->getComponent<CTransform>().pos.x;
         auto & entityPosY = e->getComponent<CTransform>().pos.y;
 
-        e->getComponent<CShape>().circle.setPosition(entityPosX, entityPosY);
-        e->getComponent<CShape>().circle.setRotation(45.0f);
+        e->getComponent<CRectangle>().rectangle.setPosition(entityPosX, entityPosY);
+        m_game->window().draw(e->getComponent<CRectangle>().rectangle);
+
+//        e->getComponent<CShape>().circle.setPosition(entityPosX, entityPosY);
+//        e->getComponent<CShape>().circle.setRotation(45.0f);
         //e->getComponent<CTransform>().angle += 1.0f;
         //e->getComponent<CShape>().circle.setRotation(e->getComponent<CTransform>().angle);
-        m_game->window().draw(e->getComponent<CShape>().circle);
+//        m_game->window().draw(e->getComponent<CShape>().circle);
     }
 }
 
