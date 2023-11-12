@@ -55,7 +55,7 @@ public:
     {
         rectangle.setOutlineColor(sf::Color::White);
         rectangle.setFillColor(sf::Color(0,0,0,0));
-        rectangle.setOutlineThickness(2);
+        rectangle.setOutlineThickness(1);
         rectangle.setOrigin(rectSize.x / 2.0f, rectSize.y / 2.0f);
     }
 };
@@ -123,6 +123,7 @@ public:
     bool down = false;
     bool left = false;
     bool right = false;
+    bool jump = false;
 
     CInput() {}
 };

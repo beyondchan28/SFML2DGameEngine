@@ -42,6 +42,7 @@ todo:
 - Platformer physics ()
     + gravity
     + AABB collision
+    + platformer jump and gravity interaction kinda confusing
 - Movement system ()
     + use velocity, dont directly interact to the position
     + state changes

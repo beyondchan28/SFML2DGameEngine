@@ -23,10 +23,9 @@ void Scene_Play::init(const std::string & levelPath)
     registerAction(sf::Keyboard::C, "TOGGLE_COLLISION");
     registerAction(sf::Keyboard::G, "TOGGLE_GRID");
 
-    registerAction(sf::Keyboard::W, "UP");
-    registerAction(sf::Keyboard::S, "DOWN");
     registerAction(sf::Keyboard::A, "LEFT");
     registerAction(sf::Keyboard::D, "RIGHT");
+    registerAction(sf::Keyboard::Space, "JUMP");
 
     auto & assets = m_game->assets();
 
@@ -116,6 +115,7 @@ void Scene_Play::update()
 
     if(!m_paused)
     {
+        sMovement();
         sCollision();
         if (m_useGravity) {sGravity();}
 
@@ -182,30 +182,22 @@ void Scene_Play::sDoAction(const Action & action)
         }
         else if (action.name() == "PAUSE")
         {
-            m_paused = (m_paused == true) ? false : true;
+            m_paused = !m_paused;
         }
         else if (action.name() == "TOGGLE_COLLISION")
         {
-            m_drawCollision = (m_drawCollision == true) ? false : true;
+            m_drawCollision = !m_drawCollision;
         }
         else if (action.name() == "TOGGLE_TEXTURE")
         {
-            m_drawTextures= (m_drawTextures == true) ? false : true;
+            m_drawTextures = !m_drawTextures;
         }
         else if (action.name() == "TOGGLE_GRID")
         {
-            m_drawGrid = (m_drawGrid == true) ? false : true;
+            m_drawGrid = !m_drawGrid;
         }
 
 
-        if(action.name() == "UP")
-        {
-            m_player->getComponent<CInput>().up= true;
-        }
-        if(action.name() == "DOWN")
-        {
-            m_player->getComponent<CInput>().down = true;
-        }
         if(action.name() == "LEFT")
         {
             m_player->getComponent<CInput>().left = true;
@@ -213,6 +205,10 @@ void Scene_Play::sDoAction(const Action & action)
         if(action.name() == "RIGHT")
         {
             m_player->getComponent<CInput>().right = true;
+        }
+        if(action.name() == "JUMP")
+        {
+            m_player->getComponent<CInput>().jump= true;
         }
 
     }
@@ -263,17 +259,23 @@ void Scene_Play::sCollision()
     for(auto & t : m_entityManager.getEntities("Tile"))
     {
        Vec2 overlapPos =  m_physics.getOverlap(m_player, t);
-       bool isVerticalOverlap = m_physics.isVerticalOverlap(overlapPos.y);
+       Vec2 prevOverlapPos =  m_physics.getPreviousOverlap(m_player, t);
 
-       if(isVerticalOverlap)
+
+       if(m_physics.isOverlap(overlapPos))
        {
-           m_useGravity = false;
-           m_player->getComponent<CTransform>().prevPos = overlapPos;
+           Vec2 overlapDir =  m_physics.getOverlapDirection(m_player, t);
+           if (overlapDir.y < 0)
+           {
+               m_useGravity = !m_useGravity;
+               m_player->getComponent<CTransform>().pos.y += overlapDir.y * overlapPos.y;
 
-           //render resolution example, its not working correctly
-           m_player->getComponent<CTransform>().pos.y -= overlapPos.y;
-
+           }
        }
+
+
+
+
     }
 }
 
@@ -290,6 +292,39 @@ void Scene_Play::sGravity()
         }
     }
 }
+
+void Scene_Play::sMovement()
+{
+    m_player->getComponent<CTransform>().velocity = {0,0};
+
+
+    if (m_player->getComponent<CInput>().left)
+    {
+        m_player->getComponent<CTransform>().velocity.x = -1.0f;
+    }
+    if (m_player->getComponent<CInput>().right)
+    {
+        m_player->getComponent<CTransform>().velocity.x = 1.0f;
+    }
+    if (m_player->getComponent<CInput>().jump)
+    {
+        m_player->getComponent<CTransform>().velocity.y = -1.0f * m_playerConfig.speed * 2;
+        m_useGravity = !m_useGravity; // true
+    }
+
+
+
+    //std::cout << m_player->cTransform->velocity.x << "," << m_player->cTransform->velocity.y  << "\n";
+    if (m_player->getComponent<CTransform>().velocity.length() != 0.0f)
+    {
+        m_player->getComponent<CTransform>().velocity.normalized();
+        //std::cout << m_player->cTransform->velocity.length() << "\n";
+    }
+
+    m_player->getComponent<CTransform>().pos += (m_player->getComponent<CTransform>().velocity * m_playerConfig.speed ); // velocity times speed
+
+}
+
 
 void Scene_Play::onEnd()
 {
