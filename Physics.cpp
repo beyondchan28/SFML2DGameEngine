@@ -76,7 +76,6 @@ Vec2 Physics::getOverlapDirection(std::shared_ptr<Entity> a, std::shared_ptr<Ent
         {
             overlapDir.x *= -1; // a at the left of b
         }
-
         if (aPos.y < bPos.y)
         {
             overlapDir.y *= -1; // a at the top of b

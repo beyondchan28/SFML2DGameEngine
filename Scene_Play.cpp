@@ -25,6 +25,8 @@ void Scene_Play::init(const std::string & levelPath)
 
     registerAction(sf::Keyboard::A, "LEFT");
     registerAction(sf::Keyboard::D, "RIGHT");
+    registerAction(sf::Keyboard::W, "UP");
+    registerAction(sf::Keyboard::S, "DOWN");
     registerAction(sf::Keyboard::Space, "JUMP");
 
     auto & assets = m_game->assets();
@@ -90,7 +92,7 @@ void Scene_Play::loadConfigFile(const std::string & fileName)
 void Scene_Play::spawnPlayer()
 {
     auto player = m_entityManager.addEntity("Player");
-    player->addComponent<CTransform>(Vec2(200.0f, 200.0f), Vec2(1.0f, 1.0f), Vec2(1.0f, 1.0f), 0.0f);
+    player->addComponent<CTransform>(Vec2(100.0f, 200.0f), Vec2(1.0f, 1.0f), Vec2(1.0f, 1.0f), 0.0f);
     player->addComponent<CShape>(m_playerConfig.shapeRadius, m_playerConfig.shapeVertices,
                                  sf::Color(m_playerConfig.fillColorRed, m_playerConfig.fillColorGreen, m_playerConfig.fillColorBlue, 0),
                                  sf::Color(m_playerConfig.outlineColorRed, m_playerConfig.outlineColorGreen, m_playerConfig.outlineColorBlue),
@@ -115,9 +117,9 @@ void Scene_Play::update()
 
     if(!m_paused)
     {
+//        if (m_useGravity) {sGravity();}
         sMovement();
         sCollision();
-        if (m_useGravity) {sGravity();}
 
         sAnimation();
 
@@ -130,8 +132,9 @@ void Scene_Play::update()
 
 void Scene_Play::sRender()
 {
-    m_game->window().clear(sf::Color::Blue);
     //implement set the window to be darker if it paused
+    if (!m_paused) { m_game->window().clear(sf::Color(100, 100, 255)); }
+    else { m_game->window().clear(sf::Color(50,50,150)); }
 
     //Centered view/camera if player going right enough
     auto & pPos = m_player->getComponent<CTransform>().pos;
@@ -210,19 +213,19 @@ void Scene_Play::sDoAction(const Action & action)
         {
             m_player->getComponent<CInput>().jump= true;
         }
+        if(action.name() == "UP")
+        {
+            m_player->getComponent<CInput>().up = true;
+        }
+        if(action.name() == "DOWN")
+        {
+            m_player->getComponent<CInput>().down= true;
+        }
 
     }
 
     if(action.type() == "END")
     {
-        if(action.name() == "UP")
-        {
-            m_player->getComponent<CInput>().up= false;
-        }
-        if(action.name() == "DOWN")
-        {
-            m_player->getComponent<CInput>().down = false;
-        }
         if(action.name() == "LEFT")
         {
             m_player->getComponent<CInput>().left = false;
@@ -230,6 +233,18 @@ void Scene_Play::sDoAction(const Action & action)
         if(action.name() == "RIGHT")
         {
             m_player->getComponent<CInput>().right = false;
+        }
+        if(action.name() == "JUMP")
+        {
+            m_player->getComponent<CInput>().jump= false;
+        }
+        if(action.name() == "UP")
+        {
+            m_player->getComponent<CInput>().up = false;
+        }
+        if(action.name() == "DOWN")
+        {
+            m_player->getComponent<CInput>().down= false;
         }
     }
 }
@@ -261,20 +276,31 @@ void Scene_Play::sCollision()
        Vec2 overlapPos =  m_physics.getOverlap(m_player, t);
        Vec2 prevOverlapPos =  m_physics.getPreviousOverlap(m_player, t);
 
-
        if(m_physics.isOverlap(overlapPos))
        {
            Vec2 overlapDir =  m_physics.getOverlapDirection(m_player, t);
-           if (overlapDir.y < 0)
+
+           bool isVertivalOverlap = overlapDir.y < 0 || overlapDir.y > 0;
+           bool isHorizontalOverlap = overlapDir.x < 0 || overlapDir.x > 0;
+
+           //Colliding Resolution
+           if (isVertivalOverlap  || isHorizontalOverlap)
            {
-               m_useGravity = !m_useGravity;
-               m_player->getComponent<CTransform>().pos.y += overlapDir.y * overlapPos.y;
+               m_player->getComponent<CTransform>().pos += overlapDir * overlapPos;
 
            }
+//           else if ( isHorizontalOverlap )
+//           {
+//               m_player->getComponent<CTransform>().pos.x += overlapDir.x * overlapPos.x;
+//               break;
+//           }
+//           if (overlapDir.x < 0 || overlapDir.x > 0)
+//           {
+//               m_player->getComponent<CTransform>().pos.x += overlapDir.x * overlapPos.x;
+//
+//           }
+
        }
-
-
-
 
     }
 }
@@ -285,18 +311,17 @@ void Scene_Play::sGravity()
     {
         if(e->hasComponent<CGravity>())
         {
-            float & ePosY = e->getComponent<CTransform>().pos.y;
+            float & eVelY = e->getComponent<CTransform>().pos.y;
             float & gravity = e->getComponent<CGravity>().gravity;
-            ePosY += std::clamp(ePosY, 0.0f, gravity);
-//            std::cout << ePosY << "\n";
+            eVelY += std::clamp(eVelY, 0.0f, gravity);
+//            std::cout << eVelY << "\n";
         }
     }
 }
 
 void Scene_Play::sMovement()
 {
-    m_player->getComponent<CTransform>().velocity = {0,0};
-
+    m_player->getComponent<CTransform>().velocity = {0, 0};
 
     if (m_player->getComponent<CInput>().left)
     {
@@ -306,10 +331,24 @@ void Scene_Play::sMovement()
     {
         m_player->getComponent<CTransform>().velocity.x = 1.0f;
     }
+
+    if (m_player->getComponent<CInput>().up)
+    {
+        m_player->getComponent<CTransform>().velocity.y = -1.0f;
+    }
+    if (m_player->getComponent<CInput>().down)
+    {
+        m_player->getComponent<CTransform>().velocity.y = 1.0f;
+    }
+
     if (m_player->getComponent<CInput>().jump)
     {
-        m_player->getComponent<CTransform>().velocity.y = -1.0f * m_playerConfig.speed * 2;
-        m_useGravity = !m_useGravity; // true
+        m_player->getComponent<CTransform>().velocity.y -= m_playerConfig.speed * 2;
+        m_useGravity = false; // false
+    }
+    else if(!m_player->getComponent<CInput>().jump)
+    {
+        m_useGravity = true; // true
     }
 
 
@@ -322,6 +361,10 @@ void Scene_Play::sMovement()
     }
 
     m_player->getComponent<CTransform>().pos += (m_player->getComponent<CTransform>().velocity * m_playerConfig.speed ); // velocity times speed
+
+
+//    std::cout << m_player->getComponent<CTransform>().velocity.x << " ";
+//    std::cout << m_player->getComponent<CTransform>().velocity.y << "\n";
 
 }
 
