@@ -13,6 +13,8 @@ public:
 
     bool operator == (const Vec2& rhs) const;
     bool operator != (const Vec2& rhs) const;
+    bool operator < (const Vec2& rhs) const;
+    bool operator > (const Vec2& rhs) const;
 
     Vec2 operator + (const Vec2& rhs) const;
     Vec2 operator - (const Vec2& rhs) const;
@@ -24,6 +26,7 @@ public:
     void operator -= (const Vec2& rhs);
     void operator /= (const float rhs);
     void operator *= (const float rhs);
+
 
     float length() const;
     void normalized();

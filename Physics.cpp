@@ -66,23 +66,69 @@ Vec2 Physics::getOverlapDirection(std::shared_ptr<Entity> a, std::shared_ptr<Ent
     // calculate after the overlap happen
     if (a->hasComponent<CBoundingBox>() && b->hasComponent<CBoundingBox>())
     {
-        Vec2 overlapDir = {1, 1};
+        Vec2 & aPrevPos = a->getComponent<CTransform>().prevPos;
+        Vec2 & bPrevPos = b->getComponent<CTransform>().prevPos;
 
-        Vec2 & aPos = a->getComponent<CTransform>().pos;
-        Vec2 & bPos = b->getComponent<CTransform>().pos;
+        Vec2 & aHalfSize = a->getComponent<CBoundingBox>().halfSize;
+        Vec2 & bHalfSize = b->getComponent<CBoundingBox>().halfSize;
+
+//        Vec aTopRightCorner = {aPos.x + aHalfSize.x, aPos.y - aHalfSize.y};
+//        Vec aTopLeftCorner = {aPos.x - aHalfSize.x, aPos.y - aHalfSize.y};
+//        Vec aBotLeftCorner = {aPos.x - aHalfSize.x, aPos.y + aHalfSize.y};
+//        Vec aBotRightCorner= {aPos.x + aHalfSize.x, aPos.y + aHalfSize.y};
+//
+//        Vec bTopRightCorner = {bPos.x + bHalfSize.x, bPos.y - bHalfSize.y};
+//        Vec bTopLeftCorner = {bPos.x - bHalfSize.x, bPos.y - bHalfSize.y};//        Vec bBotLeftCorner = {bPos.x - bHalfSize.x, bPos.y + bHalfSize.y};
+//        Vec bBotRightCorner= {bPos.x + bHalfSize.x, bPos.y + bHalfSize.y};
+
+//        Vec2 aTop = (aPos.x, aPos.y - aHalfSize.y);
+//        Vec2 aBot = (aPos.x, aPos.y + aHalfSize.y);
+//        Vec2 aLeft = (aPos.x - aHalfSize.x, aPos.y);
+//        Vec2 aRight = (aPos.x + aHalfSize.x, aPos.y);
+//
+//        Vec2 bTop = (bPos.x, bPos.y - bHalfSize.y);
+//        Vec2 bBot = (bPos.x, bPos.y + bHalfSize.y);
+//        Vec2 bLeft = (bPos.x - bHalfSize.x, bPos.y);
+//        Vec2 bRight = (bPos.x + bHalfSize.x, bPos.y);
+
+//        float aTop = aPos.y - aHalfSize.y;
+//        float aBot =  aPos.y + aHalfSize.y;
+//        float aLeft = aPos.x - aHalfSize.x;
+//        float aRight = aPos.x + aHalfSize.x;
+//
+//        float bTop = bPos.y - bHalfSize.y;
+//        float bBot = bPos.y + bHalfSize.y;
+//        float bLeft = bPos.x - bHalfSize.x;
+//        float bRight = bPos.x + bHalfSize.x;
+
+//        bool isAOnTopB = (aBot > bTop);
+//        bool isAOnBotB = (aTop < bBot);
+//        bool isAOnLeftB = (aRight > bLeft);
+//        bool isAOnRightB = (aLeft < bRight;
+
 
         //this is a of b direction
-        if (aPos.x < bPos.x)
-        {
-            overlapDir.x *= -1; // a at the left of b
-        }
-        if (aPos.y < bPos.y)
-        {
-            overlapDir.y *= -1; // a at the top of b
-        }
+//        if(aPrevPos)
+//        {
+//            std::cout << "TOP" << "\n";
+//            return Vec2(0, -1); // a at the left of b
+//        }
+//        else if(isAOnBotB)
+//        {
+//            std::cout << "BOT" << "\n";
+//            return Vec2(0, 1); // a at the left of b
+//        }
+//        else if(isAOnLeftB)
+//        {
+//            std::cout << "LEFT" << "\n";
+//            return Vec2(-1, 0);  // a at the left of b
+//        }
+//        else if(isAOnRightB)
+//        {
+//            std::cout << "RIGHT" << "\n";
+//            return Vec2(1, 0); // a at the left of b
+//        }
 
-
-        return overlapDir;
     }
 
 }

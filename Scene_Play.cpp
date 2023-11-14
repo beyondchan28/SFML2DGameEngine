@@ -269,37 +269,57 @@ void Scene_Play::sAnimation()
     }
 }
 
+
 void Scene_Play::sCollision()
 {
     for(auto & t : m_entityManager.getEntities("Tile"))
     {
-       Vec2 overlapPos =  m_physics.getOverlap(m_player, t);
-       Vec2 prevOverlapPos =  m_physics.getPreviousOverlap(m_player, t);
 
+       //check the colliding direction
+       Vec2 prevOverlapPos =  m_physics.getPreviousOverlap(m_player, t);
+       m_player->getComponent<CTransform>().prevPos = prevOverlapPos;
+       const Vec2 & playerPos = m_player->getComponent<CTransform>().pos;
+       const Vec2 & playerHalfSize= m_player->getComponent<CBoundingBox>().halfSize;
+
+       const Vec2 & tilePos = t->getComponent<CTransform>().pos;
+       const Vec2 & tileHalfSize = t->getComponent<CBoundingBox>().halfSize;
+
+//       std::cout << "prevOverlap : " << prevOverlapPos.x << " ";
+//       std::cout << prevOverlapPos.y << "\n";
+//
+//       std::cout << "tilePos     : " << tilePos.x << " ";
+//       std::cout << tilePos.y << "\n";
+       Vec2 overlapDir = {0,0};
+
+
+
+       if(prevOverlapPos.x > 0 && playerPos.y - playerHalfSize.y > tilePos.y + tileHalfSize.y)
+       {
+           overlapDir = {0, 1}; // bot
+//           std::cout << "BOT" << "\n";
+       }
+       else if(prevOverlapPos.x > 0 && playerPos.y + playerHalfSize.y < tilePos.y - tileHalfSize.y)
+       {
+           overlapDir = {0, -1}; // top
+//           std::cout << "TOP" << "\n";
+       }
+       else if(prevOverlapPos.y > 0 && playerPos.x - playerHalfSize.x > tilePos.x + tileHalfSize.x)
+       {
+           overlapDir = {1, 0}; // right
+//           std::cout << "RIGHT" << "\n";
+       }
+       else if(prevOverlapPos.y > 0 && playerPos.x + playerHalfSize.x < tilePos.x - tileHalfSize.x)
+       {
+           overlapDir = {-1, 0}; // left
+//           std::cout << "LEFT" << "\n";       }
+
+       Vec2 overlapPos =  m_physics.getOverlap(m_player, t);
+       //Colliding Resolution
        if(m_physics.isOverlap(overlapPos))
        {
-           Vec2 overlapDir =  m_physics.getOverlapDirection(m_player, t);
-
-           bool isVertivalOverlap = overlapDir.y < 0 || overlapDir.y > 0;
-           bool isHorizontalOverlap = overlapDir.x < 0 || overlapDir.x > 0;
-
-           //Colliding Resolution
-           if (isVertivalOverlap  || isHorizontalOverlap)
-           {
-               m_player->getComponent<CTransform>().pos += overlapDir * overlapPos;
-
-           }
-//           else if ( isHorizontalOverlap )
-//           {
-//               m_player->getComponent<CTransform>().pos.x += overlapDir.x * overlapPos.x;
-//               break;
-//           }
-//           if (overlapDir.x < 0 || overlapDir.x > 0)
-//           {
-//               m_player->getComponent<CTransform>().pos.x += overlapDir.x * overlapPos.x;
-//
-//           }
-
+           std::cout << overlapPos.x << " " << overlapPos.y << "\n";
+           m_player->getComponent<CTransform>().pos += (overlapDir * overlapPos);
+           overlapDir = {0,0};
        }
 
     }
@@ -321,7 +341,7 @@ void Scene_Play::sGravity()
 
 void Scene_Play::sMovement()
 {
-    m_player->getComponent<CTransform>().velocity = {0, 0};
+    m_player->getComponent<CTransform>().velocity = {0,0};
 
     if (m_player->getComponent<CInput>().left)
     {
