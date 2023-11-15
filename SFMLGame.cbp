@@ -75,6 +75,7 @@
 		<Unit filename="Scene.h" />
 		<Unit filename="Scene_Menu.cpp" />
 		<Unit filename="Scene_Menu.h" />
+		<Unit filename="Scene_Play.cpp" />
 		<Unit filename="Scene_Play.h" />
 		<Unit filename="Vec2.cpp" />
 		<Unit filename="Vec2.h">

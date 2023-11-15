@@ -278,48 +278,56 @@ void Scene_Play::sCollision()
        //check the colliding direction
        Vec2 prevOverlapPos =  m_physics.getPreviousOverlap(m_player, t);
        m_player->getComponent<CTransform>().prevPos = prevOverlapPos;
-       const Vec2 & playerPos = m_player->getComponent<CTransform>().pos;
-       const Vec2 & playerHalfSize= m_player->getComponent<CBoundingBox>().halfSize;
 
-       const Vec2 & tilePos = t->getComponent<CTransform>().pos;
-       const Vec2 & tileHalfSize = t->getComponent<CBoundingBox>().halfSize;
+       Vec2 playerPos = m_player->getComponent<CTransform>().pos;
+       Vec2 playerHalfSize= m_player->getComponent<CBoundingBox>().halfSize;
 
-//       std::cout << "prevOverlap : " << prevOverlapPos.x << " ";
-//       std::cout << prevOverlapPos.y << "\n";
-//
-//       std::cout << "tilePos     : " << tilePos.x << " ";
-//       std::cout << tilePos.y << "\n";
+       Vec2 tilePos = t->getComponent<CTransform>().pos;
+       Vec2 tileHalfSize= t->getComponent<CBoundingBox>().halfSize;
+
        Vec2 overlapDir = {0,0};
 
+       float playerTopLeftX = playerPos.x - playerHalfSize.x;
+       float playerTopLeftY = playerPos.y - playerHalfSize.y;
+
+       float playerBotRightX = playerPos.x + playerHalfSize.x;
+       float playerBotRightY = playerPos.y + playerHalfSize.y;
+
+       float tileTopLeftX = tilePos.x - tileHalfSize.x;
+       float tileTopLeftY = tilePos.y - tileHalfSize.y;
+
+       float tileBotRightX = tilePos.x + tileHalfSize.x;
+       float tileBotRightY = tilePos.y + tileHalfSize.y;
+
+       float dYTB = std::abs(playerTopLeftY - tileBotRightY);
+       float dYTT = std::abs(playerTopLeftY - tileTopLeftY);
+
+       float dYBB = std::abs(playerBotRightY - tileBotRightY);
+       float dYBT = std::abs(playerBotRightY - tileTopLeftY);
+
+       float dXTT = std::abs(playerTopLeftX - tileTopLeftX);
+       float dXTB = std::abs(playerTopLeftX - tileBotRightX);
+
+       float dXBT = std::abs(playerBotRightX - tileTopLeftX);
+       float dXBB = std::abs(playerBotRightX - tileBotRightX);
+
+       bool isTop = dYTT > dYBT;
+       bool isBot = dYTB < dYBB;
+       bool isLeft = dXBT < dXTT;
+       bool isRight= dXBB > dXTB;
 
 
-       if(prevOverlapPos.x > 0 && playerPos.y - playerHalfSize.y > tilePos.y + tileHalfSize.y)
-       {
-           overlapDir = {0, 1}; // bot
-//           std::cout << "BOT" << "\n";
-       }
-       else if(prevOverlapPos.x > 0 && playerPos.y + playerHalfSize.y < tilePos.y - tileHalfSize.y)
-       {
-           overlapDir = {0, -1}; // top
-//           std::cout << "TOP" << "\n";
-       }
-       else if(prevOverlapPos.y > 0 && playerPos.x - playerHalfSize.x > tilePos.x + tileHalfSize.x)
-       {
-           overlapDir = {1, 0}; // right
-//           std::cout << "RIGHT" << "\n";
-       }
-       else if(prevOverlapPos.y > 0 && playerPos.x + playerHalfSize.x < tilePos.x - tileHalfSize.x)
-       {
-           overlapDir = {-1, 0}; // left
-//           std::cout << "LEFT" << "\n";       }
+       if(isBot) { overlapDir = {0, 1}; }
+       else if(isTop) { overlapDir = {0, -1}; }
+       else if(isRight) { overlapDir = {1, 0}; }
+       else if(isLeft) { overlapDir = {-1, 0}; }
 
        Vec2 overlapPos =  m_physics.getOverlap(m_player, t);
        //Colliding Resolution
        if(m_physics.isOverlap(overlapPos))
        {
-           std::cout << overlapPos.x << " " << overlapPos.y << "\n";
+           std::cout << overlapDir.x << " " << overlapDir.y << "\n";
            m_player->getComponent<CTransform>().pos += (overlapDir * overlapPos);
-           overlapDir = {0,0};
        }
 
     }
