@@ -42,19 +42,23 @@ todo:
 - Platformer physics ()
     + gravity
     + AABB collision
+        * testing on some tricky case
     + platformer jump and gravity interaction kinda confusing
 - Movement system ()
     + use velocity, dont directly interact to the position
     + state changes
+    + Celeste movement ?
 - Game Engine class, Scene Base class and Scene class (X)
     + test the integration of Scene and GameEngine by displaying Scene_Menu
 - The Entity not rendered at all (X)
     + EntityManager failed to work properly ( forgor to adding update function on gameLoop)
 - Found the used of simulate, width, height, and currentFrame functions ()
     + simulate is for ghost/replay mechanic (?)
+    + width and height for window size
 - Implementing Grid Map (X)
     + the Dec entity bugged. not in placed properly and the image got cut in half (X)
-- Implement View/Camera ()
-- reset the state of the scene.
+- Implement View/Camera (X)
+- Reset the state of the scene (X)
+- Implement hot reload (?)
     
     
