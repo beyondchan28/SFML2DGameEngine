@@ -41,6 +41,7 @@ todo:
     + The grid should relative to the View/Camera 
 - Platformer physics ()
     + gravity
+        * watch more about this stuff solved
     + AABB collision
         * testing on some tricky case
     + platformer jump and gravity interaction kinda confusing

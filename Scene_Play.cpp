@@ -8,6 +8,13 @@
 #include <iostream>
 #include <fstream>
 
+
+const float MAX_SPEED = 7.5f;
+
+size_t tileId = 0; //default value
+
+bool isGrounded = false; // this is problem. not restart when reset the scene
+
 Scene_Play::Scene_Play(GameEngine * gameEngine, const std::string & levelPath)
     : Scene(gameEngine)
     , m_levelPath(levelPath)
@@ -58,9 +65,9 @@ void Scene_Play::loadConfigFile(const std::string & fileName)
         if (firstWordInLine == "Player")
         {
             inputFile >> m_playerConfig.shapeRadius >> m_playerConfig.collisionRadius >> m_playerConfig.speed >>
-                        m_playerConfig.fillColorRed >> m_playerConfig.fillColorGreen >> m_playerConfig.fillColorBlue >>
-                        m_playerConfig.outlineColorRed >> m_playerConfig.outlineColorGreen >> m_playerConfig.outlineColorBlue >>
-                        m_playerConfig.outlineThickness >> m_playerConfig.shapeVertices;
+                      m_playerConfig.fillColorRed >> m_playerConfig.fillColorGreen >> m_playerConfig.fillColorBlue >>
+                      m_playerConfig.outlineColorRed >> m_playerConfig.outlineColorGreen >> m_playerConfig.outlineColorBlue >>
+                      m_playerConfig.outlineThickness >> m_playerConfig.shapeVertices;
         }
         else if (firstWordInLine == "Tile")
         {
@@ -117,7 +124,7 @@ void Scene_Play::update()
 
     if(!m_paused)
     {
-//        if (m_useGravity) {sGravity();}
+        sGravity();
         sMovement();
         sCollision();
 
@@ -133,8 +140,14 @@ void Scene_Play::update()
 void Scene_Play::sRender()
 {
     //implement set the window to be darker if it paused
-    if (!m_paused) { m_game->window().clear(sf::Color(100, 100, 255)); }
-    else { m_game->window().clear(sf::Color(50,50,150)); }
+    if (!m_paused)
+    {
+        m_game->window().clear(sf::Color(100, 100, 255));
+    }
+    else
+    {
+        m_game->window().clear(sf::Color(50,50,150));
+    }
 
     //Centered view/camera if player going right enough
     auto & pPos = m_player->getComponent<CTransform>().pos;
@@ -272,20 +285,89 @@ void Scene_Play::sAnimation()
 
 void Scene_Play::sCollision()
 {
+    //need to find a way on which Tile the Player collided with
+//    for (auto t : m_entityManager.getEntities("Tile"))
+//    {
+//        if(isGrounded == true)
+//        {
+//            Vec2 pPos = m_player->getComponent<CTransform>().pos;
+//            Vec2 pHalfSize = m_player->getComponent<CBoundingBox>().halfSize;
+//
+//            Vec2 tPos = t->getComponent<CTransform>().pos;
+//            Vec2 tHalfSize = t->getComponent<CBoundingBox>().halfSize;
+//
+//            float leftLimit = tPos.x - tHalfSize.x - (2 * pHalfSize.x);
+//            float rightLimit = tPos.x + tHalfSize.x + (2 * pHalfSize.x);
+//
+//
+//            std::cout << pPos.x << "\n";
+//            std::cout << tPos.x  << "\n";
+//            std::cout << leftLimit << "\n";
+//            std::cout << rightLimit << "\n";
+//
+//            bool isNotOverlapTop = pPos.x < leftLimit ||  pPos.x > rightLimit;
+//            if (isNotOverlapTop)
+//            {
+//                std::cout << "HAPPEN" << "\n";
+//                isGrounded = false;
+//            }
+//        }
+//
+//
+//    }
+
     for(auto & t : m_entityManager.getEntities("Tile"))
     {
-       Vec2 overlapDir = m_physics.getOverlapDirection(m_player, t);
-       Vec2 overlapPos =  m_physics.getOverlap(m_player, t);
+        Vec2 overlapDir = m_physics.getOverlapDirection(m_player, t);
+        Vec2 overlapPos =  m_physics.getOverlap(m_player, t);
+        bool isOverlap = m_physics.isOverlap(overlapPos);
+        //Colliding Resolution
+        //Need to test about all the tricky case about this before put in the Physics Class
 
 
-       //Colliding Resolution
-       //Need to test about all the tricky case about this before put in the Physics Class
-       if(m_physics.isOverlap(overlapPos))
-       {
-           std::cout << overlapDir.x << " " << overlapDir.y << "\n";
-           m_player->getComponent<CTransform>().pos += (overlapDir * overlapPos);
-       }
 
+        if(isOverlap)
+        {
+//            std::cout << overlapDir.x << " " << overlapDir.y << "\n";
+            tileId = t->id();
+//            std::cout << tileId << "\n";
+
+            m_player->getComponent<CTransform>().pos += (overlapDir * overlapPos);
+            if(overlapDir.y < 0.0f)
+            {
+                isGrounded = true;
+            }
+
+
+        }
+
+            if(isGrounded == true)
+            {
+                if(t->id() == tileId)
+                {
+                    Vec2 pPos = m_player->getComponent<CTransform>().pos;
+                    Vec2 pHalfSize = m_player->getComponent<CBoundingBox>().halfSize;
+
+                    Vec2 tPos = t->getComponent<CTransform>().pos;
+                    Vec2 tHalfSize = t->getComponent<CBoundingBox>().halfSize;
+
+                    float leftLimit = tPos.x - tHalfSize.x - (2 * pHalfSize.x);
+                    float rightLimit = tPos.x + tHalfSize.x + (2 * pHalfSize.x);
+
+
+                    std::cout << pPos.x << "\n";
+                    std::cout << tPos.x  << "\n";
+                    std::cout << leftLimit << "\n";
+                    std::cout << rightLimit << "\n";
+
+                    bool isNotOverlapTop = pPos.x < leftLimit ||  pPos.x > rightLimit;
+                    if (isNotOverlapTop)
+                    {
+                        std::cout << "HAPPEN" << "\n";
+                        isGrounded = false;
+                    }
+                }
+            }
     }
 }
 
@@ -297,19 +379,26 @@ void Scene_Play::sGravity()
         {
             float & eVelY = e->getComponent<CTransform>().velocity.y;
             float & gravity = e->getComponent<CGravity>().gravity;
-            eVelY += std::clamp(eVelY, 0.0f, gravity);
-//            std::cout << eVelY << "\n";
-        }
-        else if (m_useGravity == false)
-        {
-            e->getComponent<CTransform>().velocity = {0,0};
+
+            if (isGrounded == false)
+            {
+                eVelY = 1.0f;
+            }
+            else if (isGrounded == true)
+            {
+                eVelY = 0.0f;
+            }
+
+
+            e->getComponent<CTransform>().velocity.y += std::clamp(eVelY, 0.0f, gravity);
+            //            std::cout << eVelY << "\n";
         }
     }
 }
 
 void Scene_Play::sMovement()
 {
-    m_player->getComponent<CTransform>().velocity = {0,0};
+    m_player->getComponent<CTransform>().velocity.x = 0;
 
     if (m_player->getComponent<CInput>().left)
     {
@@ -332,17 +421,16 @@ void Scene_Play::sMovement()
     if (m_player->getComponent<CInput>().jump)
     {
         m_player->getComponent<CTransform>().velocity.y -= m_playerConfig.speed * 2;
-        m_useGravity = false; // false
     }
 
 
 
     //std::cout << m_player->cTransform->velocity.x << "," << m_player->cTransform->velocity.y  << "\n";
-    if (m_player->getComponent<CTransform>().velocity.length() != 0.0f)
-    {
-        m_player->getComponent<CTransform>().velocity.normalized();
-        //std::cout << m_player->cTransform->velocity.length() << "\n";
-    }
+//    if (m_player->getComponent<CTransform>().velocity.length() != 0.0f)
+//    {
+//        m_player->getComponent<CTransform>().velocity.normalized();
+//        //std::cout << m_player->cTransform->velocity.length() << "\n";
+//    }
 
     m_player->getComponent<CTransform>().pos += (m_player->getComponent<CTransform>().velocity * m_playerConfig.speed ); // velocity times speed
 

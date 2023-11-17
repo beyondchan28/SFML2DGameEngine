@@ -81,7 +81,7 @@ void Vec2::operator *= (const float rhs)
 
 float Vec2::length() const
 {
-    return sqrt(pow(x, 2.0) + pow(y, 2.0));
+    return std::sqrt(pow(x, 2.0) + pow(y, 2.0));
 }
 
 //still 20% more speed when moving diagonally

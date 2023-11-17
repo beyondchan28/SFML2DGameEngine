@@ -28,8 +28,6 @@ protected:
     sf::Text m_gridText;
 
     Physics m_physics;
-    bool m_useGravity = true;
-
 
     struct PlayerConfig m_playerConfig;
 
