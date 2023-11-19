@@ -99,6 +99,7 @@ class CGravity : public Component
 {
 public:
     float gravity = 0;
+    bool useGravity = true;
     CGravity() {}
     CGravity(float g) : gravity(g) {}
 };

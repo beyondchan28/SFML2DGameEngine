@@ -13,6 +13,12 @@ bool Physics::isCircleIntersect(float x1, float y1, float r1, float x2, float y2
     return sqrDeltaPos <= sqrRad;
 }
 
+bool Physics::isPointInCircle(Vec2 circlePos, float circleRadius, Vec2 pointPos) const
+{
+    return pointPos.x > circlePos.x - circleRadius && pointPos.x < circlePos.x + circleRadius &&
+           pointPos.y > circlePos.y - circleRadius && pointPos.y < circlePos.y + circleRadius;
+}
+
 Vec2 Physics::getOverlap(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b) const
 {
 
@@ -87,6 +93,7 @@ Vec2 Physics::getOverlapDirection(std::shared_ptr<Entity> a, std::shared_ptr<Ent
         float bBotRightX = bPos.x + bHalfSize.x;
         float bBotRightY = bPos.y + bHalfSize.y;
 
+        // there is something wrong on this. its not that efficient
         float dYTB = std::abs(aTopLeftY - bBotRightY);
         float dYTT = std::abs(aTopLeftY - bTopLeftY);
 

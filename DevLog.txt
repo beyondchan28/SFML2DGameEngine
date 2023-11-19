@@ -45,6 +45,8 @@ todo:
     + AABB collision
         * testing on some tricky case
     + platformer jump and gravity interaction kinda confusing
+    + need to find a way to check direction only on the collided tile
+    + need to find a way so that not always checking all the tiles for collision
 - Movement system ()
     + use velocity, dont directly interact to the position
     + state changes

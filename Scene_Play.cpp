@@ -7,12 +7,15 @@
 
 #include <iostream>
 #include <fstream>
+#include <queue>
+
+std::queue<size_t> tilesId;
+std::vector<size_t> collidedTilesId;
 
 
 const float MAX_SPEED = 7.5f;
 
-size_t tileId = 0; //default value
-
+//std::queue<size_t> tileId; //default value
 bool isGrounded = false; // this is problem. not restart when reset the scene
 
 Scene_Play::Scene_Play(GameEngine * gameEngine, const std::string & levelPath)
@@ -99,7 +102,7 @@ void Scene_Play::loadConfigFile(const std::string & fileName)
 void Scene_Play::spawnPlayer()
 {
     auto player = m_entityManager.addEntity("Player");
-    player->addComponent<CTransform>(Vec2(100.0f, 200.0f), Vec2(1.0f, 1.0f), Vec2(1.0f, 1.0f), 0.0f);
+    player->addComponent<CTransform>(Vec2(100.0f, 50.0f), Vec2(1.0f, 1.0f), Vec2(1.0f, 1.0f), 0.0f);
     player->addComponent<CShape>(m_playerConfig.shapeRadius, m_playerConfig.shapeVertices,
                                  sf::Color(m_playerConfig.fillColorRed, m_playerConfig.fillColorGreen, m_playerConfig.fillColorBlue, 0),
                                  sf::Color(m_playerConfig.outlineColorRed, m_playerConfig.outlineColorGreen, m_playerConfig.outlineColorBlue),
@@ -285,65 +288,63 @@ void Scene_Play::sAnimation()
 
 void Scene_Play::sCollision()
 {
-    //need to find a way on which Tile the Player collided with
-//    for (auto t : m_entityManager.getEntities("Tile"))
-//    {
-//        if(isGrounded == true)
-//        {
-//            Vec2 pPos = m_player->getComponent<CTransform>().pos;
-//            Vec2 pHalfSize = m_player->getComponent<CBoundingBox>().halfSize;
-//
-//            Vec2 tPos = t->getComponent<CTransform>().pos;
-//            Vec2 tHalfSize = t->getComponent<CBoundingBox>().halfSize;
-//
-//            float leftLimit = tPos.x - tHalfSize.x - (2 * pHalfSize.x);
-//            float rightLimit = tPos.x + tHalfSize.x + (2 * pHalfSize.x);
-//
-//
-//            std::cout << pPos.x << "\n";
-//            std::cout << tPos.x  << "\n";
-//            std::cout << leftLimit << "\n";
-//            std::cout << rightLimit << "\n";
-//
-//            bool isNotOverlapTop = pPos.x < leftLimit ||  pPos.x > rightLimit;
-//            if (isNotOverlapTop)
-//            {
-//                std::cout << "HAPPEN" << "\n";
-//                isGrounded = false;
-//            }
-//        }
-//
-//
-//    }
-
     for(auto & t : m_entityManager.getEntities("Tile"))
     {
-        Vec2 overlapDir = m_physics.getOverlapDirection(m_player, t);
-        Vec2 overlapPos =  m_physics.getOverlap(m_player, t);
-        bool isOverlap = m_physics.isOverlap(overlapPos);
-        //Colliding Resolution
-        //Need to test about all the tricky case about this before put in the Physics Class
+        const Vec2 & playerPos = m_player->getComponent<CTransform>().pos;
+        const Vec2 & tilePos = t->getComponent<CTransform>().pos;
 
-
-
-        if(isOverlap)
+        bool isTileInRadius = m_physics.isPointInCircle(playerPos, (2.0f * 64.0f + 48.0f), tilePos)
+                              ;
+        if(isTileInRadius)
         {
-//            std::cout << overlapDir.x << " " << overlapDir.y << "\n";
-            tileId = t->id();
-//            std::cout << tileId << "\n";
-
-            m_player->getComponent<CTransform>().pos += (overlapDir * overlapPos);
-            if(overlapDir.y < 0.0f)
-            {
-                isGrounded = true;
-            }
-
-
+            tilesId.push(t->id());
         }
+    }
 
-            if(isGrounded == true)
+    while (!tilesId.empty())
+    {
+        for (auto & t : m_entityManager.getEntities("Tile"))
+        {
+            if(tilesId.front() == t->id())
             {
-                if(t->id() == tileId)
+                Vec2 overlapPos =  m_physics.getOverlap(m_player, t);
+                bool isOverlap = m_physics.isOverlap(overlapPos);
+
+                if(isOverlap)
+                {
+                    size_t tileId = tilesId.front();
+                    collidedTilesId.push_back(tileId);
+
+                    std::cout << tileId << "\n";
+
+                    Vec2 overlapDir;
+                    if (t->id() == tileId)
+                    {
+                        overlapDir = m_physics.getOverlapDirection(m_player, t);
+                        m_player->getComponent<CTransform>().pos += (overlapDir * overlapPos);
+//                        std::cout << overlapDir.y << "\n";
+                        if(overlapDir.y < 0.0f)
+                        {
+                            m_player->getComponent<CGravity>().useGravity = false;
+
+                            std::cout << "overlapping" << "\n";
+                        }
+                    }
+//                    std::cout << tileId << "\n";
+                }
+            }
+        }
+        tilesId.pop();
+    }
+
+    for (size_t tId : collidedTilesId)
+    {
+        for( auto & t : m_entityManager.getEntities("Tile"))
+        {
+            if(m_player->getComponent<CGravity>().useGravity == false)
+            {
+
+                if(t->id() == tId)
                 {
                     Vec2 pPos = m_player->getComponent<CTransform>().pos;
                     Vec2 pHalfSize = m_player->getComponent<CBoundingBox>().halfSize;
@@ -355,20 +356,26 @@ void Scene_Play::sCollision()
                     float rightLimit = tPos.x + tHalfSize.x + (2 * pHalfSize.x);
 
 
-                    std::cout << pPos.x << "\n";
-                    std::cout << tPos.x  << "\n";
-                    std::cout << leftLimit << "\n";
-                    std::cout << rightLimit << "\n";
+                    //                    std::cout << pPos.x << "\n";
+                    //                    std::cout << tPos.x  << "\n";
+                    //                    std::cout << leftLimit << "\n";
+                    //                    std::cout << rightLimit << "\n";
 
                     bool isNotOverlapTop = pPos.x < leftLimit ||  pPos.x > rightLimit;
                     if (isNotOverlapTop)
                     {
-                        std::cout << "HAPPEN" << "\n";
-                        isGrounded = false;
+                        std::cout << "not overlap" << "\n";
+                        m_player->getComponent<CGravity>().useGravity = true;
+                        //remove the tileId from the Vector
+
                     }
                 }
             }
+        }
     }
+
+
+
 }
 
 void Scene_Play::sGravity()
@@ -380,18 +387,17 @@ void Scene_Play::sGravity()
             float & eVelY = e->getComponent<CTransform>().velocity.y;
             float & gravity = e->getComponent<CGravity>().gravity;
 
-            if (isGrounded == false)
+            if (m_player->getComponent<CGravity>().useGravity == true)
             {
                 eVelY = 1.0f;
             }
-            else if (isGrounded == true)
+            else if (m_player->getComponent<CGravity>().useGravity == false)
             {
                 eVelY = 0.0f;
             }
 
 
-            e->getComponent<CTransform>().velocity.y += std::clamp(eVelY, 0.0f, gravity);
-            //            std::cout << eVelY << "\n";
+            eVelY += std::clamp(eVelY, -2.0f, gravity);
         }
     }
 }
@@ -436,7 +442,6 @@ void Scene_Play::sMovement()
 
 
 //    std::cout << m_player->getComponent<CTransform>().velocity.x << " ";
-//    std::cout << m_player->getComponent<CTransform>().velocity.y << "\n";
 
 }
 
