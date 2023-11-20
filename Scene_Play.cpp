@@ -326,7 +326,7 @@ void Scene_Play::sCollision()
                         if(overlapDir.y < 0.0f)
                         {
                             m_player->getComponent<CGravity>().useGravity = false;
-
+                            m_player->getComponent<CTransform>().velocity.y = 0;
                             std::cout << "overlapping" << "\n";
                         }
                     }
@@ -397,7 +397,7 @@ void Scene_Play::sGravity()
             }
 
 
-            eVelY += std::clamp(eVelY, -2.0f, gravity);
+//            eVelY += std::clamp(eVelY, -2.0f, gravity);
         }
     }
 }

@@ -69,6 +69,10 @@ Vec2 Physics::getPreviousOverlap(std::shared_ptr<Entity> a, std::shared_ptr<Enti
 
 // calculate the collision direction from A to B
 // example : A (player) and B (tile)
+
+// the bug is because if y velocity = 2, it takes 2 pixel to finally colliding
+// so, before it took 2 pixel to collide which is 1 pixel more than it used to
+// detect the direction
 Vec2 Physics::getOverlapDirection(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b)
 {
     if (a->hasComponent<CBoundingBox>() && b->hasComponent<CBoundingBox>())
@@ -93,7 +97,7 @@ Vec2 Physics::getOverlapDirection(std::shared_ptr<Entity> a, std::shared_ptr<Ent
         float bBotRightX = bPos.x + bHalfSize.x;
         float bBotRightY = bPos.y + bHalfSize.y;
 
-        // there is something wrong on this. its not that efficient
+        // there is something wrong on this. its not that efficient. not that good
         float dYTB = std::abs(aTopLeftY - bBotRightY);
         float dYTT = std::abs(aTopLeftY - bTopLeftY);
 
