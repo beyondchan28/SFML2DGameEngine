@@ -11,12 +11,7 @@
 
 std::queue<size_t> tilesId;
 std::vector<size_t> collidedTilesId;
-
-
-const float MAX_SPEED = 7.5f;
-
-//std::queue<size_t> tileId; //default value
-bool isGrounded = false; // this is problem. not restart when reset the scene
+sf::Vector2f playerSpriteDir = {1.0f, 1.0f};
 
 Scene_Play::Scene_Play(GameEngine * gameEngine, const std::string & levelPath)
     : Scene(gameEngine)
@@ -76,24 +71,22 @@ void Scene_Play::loadConfigFile(const std::string & fileName)
         {
             std::string name, entityType;
             float gridX, gridY;
-            bool animate;
 
             entityType = firstWordInLine;
 
-            inputFile >> name >> gridX >> gridY >> animate;
-            settingUpStaticEntity(entityType, name, gridX, gridY, animate);
+            inputFile >> name >> gridX >> gridY;
+            settingUpStaticEntity(entityType, name, gridX, gridY);
 
         }
         else if (firstWordInLine == "Dec")
         {
             std::string name, entityType;
             float gridX, gridY;
-            bool animate;
 
             entityType = firstWordInLine;
 
-            inputFile >> name >> gridX >> gridY >> animate;
-            settingUpStaticEntity(entityType, name, gridX, gridY, animate);
+            inputFile >> name >> gridX >> gridY;
+            settingUpStaticEntity(entityType, name, gridX, gridY);
 
         }
     }
@@ -265,27 +258,6 @@ void Scene_Play::sDoAction(const Action & action)
     }
 }
 
-void Scene_Play::sAnimation()
-{
-    if (m_player->getComponent<CState>().state == "idle")
-    {
-        if (m_player->getComponent<CAnimation>().animation.getName() != "walk")
-        {
-            m_player->addComponent<CAnimation>(m_game->assets().getAnimation("walk"), true);
-        }
-    }
-
-
-    for (auto & e : m_entityManager.getEntities())
-    {
-        if (e->hasComponent<CAnimation>())
-        {
-            e->getComponent<CAnimation>().animation.update();
-        }
-    }
-}
-
-
 void Scene_Play::sCollision()
 {
     for(auto & t : m_entityManager.getEntities("Tile"))
@@ -315,7 +287,7 @@ void Scene_Play::sCollision()
                     size_t tileId = tilesId.front();
                     collidedTilesId.push_back(tileId);
 
-                    std::cout << tileId << "\n";
+//                    std::cout << tileId << "\n";
 
                     Vec2 overlapDir;
                     if (t->id() == tileId)
@@ -327,7 +299,7 @@ void Scene_Play::sCollision()
                         {
                             m_player->getComponent<CGravity>().useGravity = false;
                             m_player->getComponent<CTransform>().velocity.y = 0;
-                            std::cout << "overlapping" << "\n";
+//                            std::cout << "overlapping" << "\n";
                         }
                     }
 //                    std::cout << tileId << "\n";
@@ -364,7 +336,7 @@ void Scene_Play::sCollision()
                     bool isNotOverlapTop = pPos.x < leftLimit ||  pPos.x > rightLimit;
                     if (isNotOverlapTop)
                     {
-                        std::cout << "not overlap" << "\n";
+//                        std::cout << "not overlap" << "\n";
                         m_player->getComponent<CGravity>().useGravity = true;
                         //remove the tileId from the Vector
 
@@ -408,12 +380,19 @@ void Scene_Play::sMovement()
 
     if (m_player->getComponent<CInput>().left)
     {
+        m_player->getComponent<CState>().state = "walk_left";
         m_player->getComponent<CTransform>().velocity.x = -1.0f;
     }
-    if (m_player->getComponent<CInput>().right)
+    else if (m_player->getComponent<CInput>().right)
     {
+        m_player->getComponent<CState>().state = "walk_right";
         m_player->getComponent<CTransform>().velocity.x = 1.0f;
     }
+    else
+    {
+        m_player->getComponent<CState>().state = "idle";
+    }
+
 
     if (m_player->getComponent<CInput>().up)
     {
@@ -430,7 +409,6 @@ void Scene_Play::sMovement()
     }
 
 
-
     //std::cout << m_player->cTransform->velocity.x << "," << m_player->cTransform->velocity.y  << "\n";
 //    if (m_player->getComponent<CTransform>().velocity.length() != 0.0f)
 //    {
@@ -445,6 +423,48 @@ void Scene_Play::sMovement()
 
 }
 
+void Scene_Play::sAnimation()
+{
+    if (m_player->getComponent<CState>().state == "walk_right")
+    {
+        playerSpriteDir.x = 1.0f;
+        if (m_player->getComponent<CAnimation>().animation.getName() != "walkPlayer")
+        {
+            m_player->addComponent<CAnimation>(m_game->assets().getAnimation("walkPlayer"), true);
+        }
+    }
+    else if (m_player->getComponent<CState>().state == "walk_left")
+    {
+        playerSpriteDir.x = -1.0f;
+        if (m_player->getComponent<CAnimation>().animation.getName() != "walkPlayer")
+        {
+            m_player->addComponent<CAnimation>(m_game->assets().getAnimation("walkPlayer"), true);
+        }
+    }
+    else if (m_player->getComponent<CState>().state == "idle")
+    {
+        if (m_player->getComponent<CAnimation>().animation.getName() != "idlePlayer")
+        {
+            m_player->addComponent<CAnimation>(m_game->assets().getAnimation("idlePlayer"), true);
+        }
+    }
+
+    m_player->getComponent<CAnimation>().animation.getSprite().setScale(playerSpriteDir);
+
+
+    for (auto & e : m_entityManager.getEntities())
+    {
+        if (e->hasComponent<CAnimation>())
+        {
+            if(e->getComponent<CAnimation>().repeat == true)
+            {
+                e->getComponent<CAnimation>().animation.update();
+            }
+        }
+    }
+
+    std::cerr << m_player->getComponent<CState>().state << "\n";
+}
 
 void Scene_Play::onEnd()
 {
@@ -452,9 +472,9 @@ void Scene_Play::onEnd()
     m_game->changeScene("MENU", std::make_shared<Scene_Menu>(m_game));
 }
 
-void Scene_Play::settingUpStaticEntity(std::string entityType, std::string name, float gridX, float gridY, bool animate)
+void Scene_Play::settingUpStaticEntity(std::string entityType, std::string name, float gridX, float gridY)
 {
-    Animation anim(name, m_game->assets().getTexture(name), animate);
+    Animation anim(name, m_game->assets().getTexture(name));
 
     auto staticEntity = m_entityManager.addEntity(entityType);
     staticEntity->addComponent<CAnimation>(anim, false);

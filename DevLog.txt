@@ -32,11 +32,11 @@ todo:
 - Action class and input map (X)
 - Entity and new Component interface (X)
 - Assets class (X)
-- change all entity's visual with texture ()
+- change all entity's visual with texture (X)
 - rectangular collision shape (X)
 - seperate the physics/collison detection into different class (X)
 - Animation system (X)
-- Debug mode ()
+- Debug mode (X)
     + Collision visual working, but need to determine based on the CCollision component 
     + The grid should relative to the View/Camera 
 - Platformer physics ()
@@ -46,6 +46,8 @@ todo:
         * testing on some tricky case
     + platformer jump and gravity interaction kinda confusing
     + need to find a way to check direction only on the collided tile
+        * the current dircetion algorithm maybe not that efficient
+        * need to validate the direction collision algorithm
     + need to find a way so that not always checking all the tiles for collision
 - Movement system ()
     + use velocity, dont directly interact to the position
@@ -63,5 +65,7 @@ todo:
 - Implement View/Camera (X)
 - Reset the state of the scene (X)
 - Implement hot reload (?)
+- Implement animation changes with state ()
+    + some repeat animations and some not not repeat animation
     
     

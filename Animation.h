@@ -14,12 +14,13 @@ class Animation
     size_t m_speed = 0;
     Vec2 m_size = {1, 1};
     std::string m_name = "none";
-    bool m_animate = true;
+
 
 public:
+    sf::Vector2f scale = {1.0f, 1.0f};
     Animation();
-    Animation(const std::string & name, const sf::Texture & texture, bool animate = false);
-    Animation(const std::string & name, const sf::Texture & texture, size_t frameCount, size_t speed, bool animate = true);
+    Animation(const std::string & name, const sf::Texture & texture);
+    Animation(const std::string & name, const sf::Texture & texture, size_t frameCount, size_t speed);
     void update();
     bool hasEnded() const;
     const std::string & getName();

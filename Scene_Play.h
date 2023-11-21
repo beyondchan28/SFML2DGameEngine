@@ -46,7 +46,7 @@ protected:
 
     void onEnd();
 
-    void settingUpStaticEntity(std::string entityType, std::string name, float gridX, float gridY, bool animate);
+    void settingUpStaticEntity(std::string entityType, std::string name, float gridX, float gridY);
 
     Vec2 gridToMidPixel(float gridX, float gridY, std::shared_ptr<Entity> entity);
 

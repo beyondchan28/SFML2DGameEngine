@@ -12,8 +12,7 @@ struct AssetsConf
 {
     std::string name, path;
     size_t frameCount, animationSpeed;
-    bool animate;
-};
+    bool animate;};
 
 struct AssetsConf assetConf;
 
@@ -31,29 +30,28 @@ void Assets::loadFromFile(const std::string & path)
         {
             inputFile >> assetConf.name >> assetConf.path;
             addTexture(assetConf.name, assetConf.path);
-            std::cout << assetConf.name << "Load \n";
+            std::cout << assetConf.name << " Load \n";
         }
         else if (firstWordInLine == "Sound" )
         {
             inputFile >> assetConf.name >> assetConf.path;
             addSound(assetConf.name, assetConf.path);
-            std::cout << assetConf.name << "Load \n";
+            std::cout << assetConf.name << " Load \n";
         }
         else if (firstWordInLine == "Font")
         {
             inputFile >> assetConf.name >> assetConf.path;
             addFont(assetConf.name, assetConf.path);
-            std::cout << assetConf.name << "Load \n";
+            std::cout << assetConf.name << " Load \n";
 
         }
         else if (firstWordInLine == "Animation")
         {
             inputFile >> assetConf.name >> assetConf.path
-                     >> assetConf.frameCount >> assetConf.animationSpeed
-                     >> assetConf.animate;
-            Animation anim(assetConf.name, getTexture(assetConf.path), assetConf.frameCount, assetConf.animationSpeed, assetConf.animate);
+                     >> assetConf.frameCount >> assetConf.animationSpeed;
+            Animation anim(assetConf.name, getTexture(assetConf.path), assetConf.frameCount, assetConf.animationSpeed);
             addAnimation(assetConf.name, anim);
-            std::cout << assetConf.name << "Load \n";
+            std::cout << assetConf.name << " Load \n";
 
 
         }
