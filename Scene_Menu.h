@@ -1,4 +1,4 @@
-#pragma once
+#pragma oncem_menuStrings[m_selectedMenuIndex]
 
 #include "Scene.h"
 #include <map>

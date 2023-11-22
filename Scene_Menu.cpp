@@ -1,6 +1,7 @@
 #include "Scene_Menu.h"
-#include "Scene.h"
+#include "Scene_TopDown.h"
 #include "Scene_Play.h"
+#include "Scene.h"
 
 Scene_Menu::Scene_Menu(GameEngine * gameEngine)
     : Scene(gameEngine)
@@ -15,7 +16,7 @@ void Scene_Menu::init()
 
     //configurationFilePath
     m_levelPaths.push_back("level1Conf.txt");
-    m_levelPaths.push_back("LEVEL2");
+    m_levelPaths.push_back("level2Conf.txt");
 
     registerAction(sf::Keyboard::Up, "UP");
     registerAction(sf::Keyboard::Down, "DOWN");
@@ -85,7 +86,14 @@ void Scene_Menu::sDoAction(const Action & action)
         }
         else if(action.name() == "PLAY")
         {
-            m_game->changeScene("PLAY", std::make_shared<Scene_Play>(m_game, m_levelPaths[m_selectedMenuIndex]));
+            if (m_selectedMenuIndex == 0)
+            {
+                m_game->changeScene("LEVEL 1", std::make_shared<Scene_Play>(m_game, m_levelPaths[m_selectedMenuIndex]));
+            }
+            else if (m_selectedMenuIndex == 1)
+            {
+                m_game->changeScene("LEVEL 2", std::make_shared<Scene_TopDown>(m_game, m_levelPaths[m_selectedMenuIndex]));
+            }
         }
         else if(action.name() == "QUIT")
         {

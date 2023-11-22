@@ -67,5 +67,15 @@ todo:
 - Implement hot reload (?)
 - Implement animation changes with state ()
     + some repeat animations and some not not repeat animation
-    
+
+##########################################################################################
+
+Implementing LineSegment Intersection/RayCasting/Light
+- making top down level with movement and collision (X)
+- making the line segment intersection
+- making the polygon mesh collision and intersection (Vertex based mesh)
+- implement how to calculate and firing the raycast
+
+Reference : the video lecture & the website is enough to implement
+
     

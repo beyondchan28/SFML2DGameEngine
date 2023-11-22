@@ -388,6 +388,11 @@ void Scene_Play::sMovement()
         m_player->getComponent<CState>().state = "walk_right";
         m_player->getComponent<CTransform>().velocity.x = 1.0f;
     }
+    // need to find better condition than this
+    else if (m_player->getComponent<CTransform>().velocity.y != 0.0f)
+    {
+        m_player->getComponent<CState>().state = "air";
+    }
     else
     {
         m_player->getComponent<CState>().state = "idle";
@@ -403,11 +408,11 @@ void Scene_Play::sMovement()
         m_player->getComponent<CTransform>().velocity.y = 1.0f;
     }
 
+    // this is buggy
     if (m_player->getComponent<CInput>().jump)
     {
         m_player->getComponent<CTransform>().velocity.y -= m_playerConfig.speed * 2;
     }
-
 
     //std::cout << m_player->cTransform->velocity.x << "," << m_player->cTransform->velocity.y  << "\n";
 //    if (m_player->getComponent<CTransform>().velocity.length() != 0.0f)
@@ -439,6 +444,13 @@ void Scene_Play::sAnimation()
         if (m_player->getComponent<CAnimation>().animation.getName() != "walkPlayer")
         {
             m_player->addComponent<CAnimation>(m_game->assets().getAnimation("walkPlayer"), true);
+        }
+    }
+    else if (m_player->getComponent<CState>().state == "air")
+    {
+        if (m_player->getComponent<CAnimation>().animation.getName() != "airPlayer")
+        {
+            m_player->addComponent<CAnimation>(m_game->assets().getAnimation("airPlayer"), false);
         }
     }
     else if (m_player->getComponent<CState>().state == "idle")
