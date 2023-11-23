@@ -3,8 +3,7 @@
 #include <iostream>
 #include "Vec2.h"
 
-Physics::Physics()
-{}
+Physics::Physics(){}
 
 bool Physics::isCircleIntersect(float x1, float y1, float r1, float x2, float y2, float r2)
 {
@@ -17,6 +16,11 @@ bool Physics::isPointInCircle(Vec2 circlePos, float circleRadius, Vec2 pointPos)
 {
     return pointPos.x > circlePos.x - circleRadius && pointPos.x < circlePos.x + circleRadius &&
            pointPos.y > circlePos.y - circleRadius && pointPos.y < circlePos.y + circleRadius;
+}
+
+bool Physics::isOverlap(Vec2 overlap)
+{
+    return (overlap.x > 0.0f && overlap.y > 0.0f)? true : false;
 }
 
 Vec2 Physics::getOverlap(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b) const
@@ -126,9 +130,35 @@ Vec2 Physics::getOverlapDirection(std::shared_ptr<Entity> a, std::shared_ptr<Ent
 }
 
 
-bool Physics::isOverlap(Vec2 overlap)
+Physics::Intersect Physics::lineIntersection(Vec2 a, Vec2 b, Vec2 c, Vec2 d)
 {
-    return (overlap.x > 0.0f && overlap.y > 0.0f)? true : false;
-}
+    Vec2 r = (b - a);
+    Vec2 s = (d - c);
+    float rxs = r.cross(s);
+    Vec2 cma = c - a;
+    float t = (cma.cross(s)) / rxs;
+    float u = (cma.cross(r)) / rxs;
 
+    if (t >= 0 && t <= 1 && u >= 0 && u <= 1)
+    {
+        Vec2 intersectPoint(a.x + t*r.x, a.y + t*r.y);
+
+        struct Physics::Intersect intersect;
+        intersect.result = true;
+        intersect.pos = intersectPoint;
+
+        return intersect;
+    }
+    else
+    {
+        struct Physics::Intersect intersect;
+        intersect.result = false;
+        intersect.pos = Vec2(0,0);
+
+        return intersect;
+    }
+
+
+
+}
 

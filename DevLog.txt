@@ -51,6 +51,7 @@ todo:
     + need to find a way so that not always checking all the tiles for collision
 - Movement system ()
     + use velocity, dont directly interact to the position
+    + times deltaTime and acceleration for smooth movement
     + state changes
     + Celeste movement ?
 - Game Engine class, Scene Base class and Scene class (X)
@@ -63,6 +64,7 @@ todo:
 - Implementing Grid Map (X)
     + the Dec entity bugged. not in placed properly and the image got cut in half (X)
 - Implement View/Camera (X)
+    + there is bug. need to reset when back to Scene_Menu
 - Reset the state of the scene (X)
 - Implement hot reload (?)
 - Implement animation changes with state ()
@@ -72,7 +74,7 @@ todo:
 
 Implementing LineSegment Intersection/RayCasting/Light
 - making top down level with movement and collision (X)
-- making the line segment intersection
+- making the line segment intersection(X)
 - making the polygon mesh collision and intersection (Vertex based mesh)
 - implement how to calculate and firing the raycast
 

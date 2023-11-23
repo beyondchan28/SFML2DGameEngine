@@ -47,3 +47,15 @@ void Scene::drawLine(const Vec2 & p1, const Vec2 & p2)
     };
     m_game->window().draw(line, 2, sf::Lines);
 }
+
+sf::VertexArray Scene::createVertex(size_t points)
+{
+    sf::VertexArray shape(sf::TriangleStrip, points);
+
+    for(size_t i =0; i < points; ++i)
+    {
+        shape[i].color = sf::Color(255,255,255,125);
+    }
+
+    return shape;
+}

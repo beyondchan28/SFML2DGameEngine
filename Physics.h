@@ -8,6 +8,8 @@
 class Physics
 {
 public:
+    struct Intersect { bool result; Vec2 pos;};
+
     Physics();
     //Vec2 CirlcleGetOverlap(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b);
     bool isCircleIntersect(float x1, float y1, float r1, float x2, float y2, float r2);
@@ -19,5 +21,5 @@ public:
     Vec2 getPreviousOverlap(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b);
     Vec2 getOverlapDirection(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b);
 
-
+    Intersect lineIntersection(Vec2 a, Vec2 b, Vec2 c, Vec2 d);
 };

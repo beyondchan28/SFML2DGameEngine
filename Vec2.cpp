@@ -91,3 +91,8 @@ void Vec2::normalized()
     x /= length();
     y /= length();
 }
+
+float Vec2::cross(const Vec2 & b)
+{
+    return x * b.y - y * b.x;
+}

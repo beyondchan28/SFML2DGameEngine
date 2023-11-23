@@ -41,5 +41,5 @@ public:
 
     bool hasEnded() const; // for deleting scene
     void drawLine(const Vec2 & p1, const Vec2 & p2);
-
+    sf::VertexArray createVertex(size_t points);
 };

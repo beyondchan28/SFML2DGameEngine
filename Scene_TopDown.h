@@ -48,6 +48,11 @@ protected:
 
     void settingUpStaticEntity(std::string entityType, std::string name, float gridX, float gridY);
 
+    void setupWalls();
+    void renderWalls();
+    void setupRaycast();
+    void raycastDetection();
+
     Vec2 gridToMidPixel(float gridX, float gridY, std::shared_ptr<Entity> entity);
 
     void drawCollision(std::shared_ptr<Entity> e, bool draw);

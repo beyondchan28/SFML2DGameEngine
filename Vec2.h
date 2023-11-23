@@ -29,6 +29,7 @@ public:
 
 
     float length() const;
+    float cross(const Vec2 & b);
     void normalized();
 
 };
