@@ -74,7 +74,8 @@ todo:
 
 Implementing LineSegment Intersection/RayCasting/Light
 - making top down level with movement and collision (X)
-- making the line segment intersection(X)
+- making the line segment intersection()
+    + the line segment didnt work as intended and not changing to the intersection point
 - making the polygon mesh collision and intersection (Vertex based mesh)
 - implement how to calculate and firing the raycast
 
