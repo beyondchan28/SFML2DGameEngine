@@ -18,8 +18,8 @@ void Scene_Menu::init()
     m_levelPaths.push_back("level1Conf.txt");
     m_levelPaths.push_back("level2Conf.txt");
 
-    registerAction(sf::Keyboard::Up, "UP");
-    registerAction(sf::Keyboard::Down, "DOWN");
+    registerAction(sf::Keyboard::W, "UP");
+    registerAction(sf::Keyboard::S, "DOWN");
     registerAction(sf::Keyboard::Enter, "PLAY");
     registerAction(sf::Keyboard::Escape, "QUIT");
 

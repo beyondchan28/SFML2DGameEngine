@@ -77,6 +77,8 @@
 		<Unit filename="Scene_Menu.h" />
 		<Unit filename="Scene_Play.cpp" />
 		<Unit filename="Scene_Play.h" />
+		<Unit filename="Scene_TopDown.cpp" />
+		<Unit filename="Scene_TopDown.h" />
 		<Unit filename="Vec2.cpp" />
 		<Unit filename="Vec2.h">
 			<Option target="&lt;{~None~}&gt;" />
