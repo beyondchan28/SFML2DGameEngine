@@ -11,6 +11,7 @@
 
 std::deque<sf::VertexArray> walls;
 std::vector<std::vector<Vec2>> vertex;
+std::deque<sf::Vector2f> collidedVertex;
 
 Scene_TopDown::Scene_TopDown(GameEngine * gameEngine, const std::string & levelPath)
     : Scene(gameEngine)
@@ -184,6 +185,7 @@ void Scene_TopDown::sRender()
 
     renderWalls();
     raycastDetection();
+    renderSightPolygon();
 
 
 //    m_game->window().draw(drawVertex(4));
@@ -220,9 +222,13 @@ void Scene_TopDown::raycastDetection()
                         if(intersection.result)
                         {
                             point2 = intersection.pos;
-                            //                std::cerr << intersection.pos.x << " ";
-                            //                std::cerr << intersection.pos.y << "\n";
                         }
+                        // calculate angle first
+                        // if not intersect, cast 2 more raycast slightly to the left and right
+//                        else
+//                        {
+//
+//                        }
                     }
                 }
 
@@ -231,8 +237,39 @@ void Scene_TopDown::raycastDetection()
                 m_game->window().draw(rayCast);
 
             }
+                collidedVertex.push_back(rayCast[1].position);
         }
     }
+}
+
+void Scene_TopDown::renderSightPolygon()
+{
+    if(!collidedVertex.empty())
+    {
+        sf::VertexArray polygonSight = createVertex(sf::TriangleFan, collidedVertex.size() + 1);
+        const Vec2 & playerPos = m_player->getComponent<CTransform>().pos;
+        polygonSight[0].position =  sf::Vector2f(playerPos.x, playerPos.y);
+        for(int i = 0; i < collidedVertex.size(); ++i)
+        {
+            if (i + 1 >= collidedVertex.size())
+            {
+                polygonSight[collidedVertex.size()+1].position = collidedVertex[collidedVertex.size()-1];
+                std::cerr << i << "\n";
+            }
+            else
+            {
+                polygonSight[i+1].position = collidedVertex[i];
+            }
+        }
+
+        m_game->window().draw(polygonSight);
+        collidedVertex.clear();
+    }
+}
+
+void Scene_TopDown::calculateRaycastAngle()
+{
+
 }
 
 void Scene_TopDown::renderWalls()
@@ -241,6 +278,8 @@ void Scene_TopDown::renderWalls()
     {
         m_game->window().draw(walls.at(i));
     }
+
+
 
 }
 
