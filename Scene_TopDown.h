@@ -51,6 +51,7 @@ protected:
     void setupWalls();
     void renderWalls();
     void raycastDetection();
+    void sortSightPoint();
     void calculateRaycastAngle();
     void renderSightPolygon();
 
