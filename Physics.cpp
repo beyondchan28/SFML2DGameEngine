@@ -158,7 +158,5 @@ Physics::Intersect Physics::lineIntersection(Vec2 a, Vec2 b, Vec2 c, Vec2 d)
         return intersect;
     }
 
-
-
 }
 

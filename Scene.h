@@ -3,6 +3,7 @@
 #include "Action.h"
 #include "EntityManager.h"
 #include "GameEngine.h"
+#include "Physics.h"
 #include <memory>
 
 class GameEngine;
@@ -23,6 +24,7 @@ class Scene
 protected:
     GameEngine * m_game = nullptr;
     EntityManager m_entityManager;
+    Physics m_physics;
     ActionMap m_actionMap;
     bool m_paused = false;
     bool m_hasEnded = false;

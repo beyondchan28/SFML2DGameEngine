@@ -22,7 +22,8 @@ void Scene::sCamera()
 {
     if(m_cameraType == Camera::Default)
     {
-        std::cerr << "work" << "\n";
+//        std::cerr << "work" << "\n";
+
     }
     else if(m_cameraType == Camera::FollowX)
     {
@@ -32,6 +33,65 @@ void Scene::sCamera()
         sf::View view = m_game->window().getView();
         view.setCenter(windowCenterX, m_game->window().getSize().y - view.getCenter().y);
         m_game->window().setView(view);
+    }
+    else if(m_cameraType == Camera::Box)
+    {
+        auto & pPos = m_entityManager.getEntities("Player")[0]->getComponent<CTransform>().pos;
+        sf::View view = m_game->window().getView();
+        const sf::Vector2f & windowCenter = view.getCenter();
+
+        float halfSize = 50.f;
+
+//        float windowCenterX = std::max(m_game->window().getSize().x / 2.0f, pPos.x );
+//        float windowCenterY = std::max(m_game->window().getSize().y / 2.0f, pPos.y );
+
+        Vec2 topLeft = {windowCenter.x - halfSize, windowCenter.y - halfSize};
+        Vec2 topRight = {windowCenter.x + halfSize, windowCenter.y - halfSize};
+        Vec2 botLeft = {windowCenter.x - halfSize, windowCenter.y + halfSize};
+        Vec2 botRight = {windowCenter.x + halfSize, windowCenter.y + halfSize};
+
+        drawLine(topLeft, botLeft);
+        drawLine(topLeft, topRight);
+        drawLine(topRight, botRight);
+        drawLine(botLeft, botRight);
+
+        if(pPos.x < topLeft.x && pPos.x < botLeft.x)
+        {
+            if(pPos.y > topLeft.y && pPos.y < botLeft.y)
+            {
+                view.setCenter(pPos.x, pPos.y);            }
+        }
+        else if(pPos.x > topRight.x && pPos.x > botRight.x)
+        {
+            if(pPos.y > topRight.y && pPos.y < botRight.y)
+            {
+                view.setCenter(pPos.x, pPos.y);
+
+            }
+        }
+        else if(pPos.y < topLeft.y && pPos.y < topRight.y)
+        {
+            if(pPos.x > topLeft.x && pPos.x < topRight.x)
+            {
+                view.setCenter(pPos.x, pPos.y);
+            }
+        }
+
+        //why the fuck is this wrong ?
+        else if(pPos.y > botLeft.y && pPos.y > botRight.y)
+        {
+            if(pPos.x > botLeft.x && pPos.x < botRight.x)
+            {
+                view.setCenter(pPos.x, pPos.y);
+
+            }
+        }
+
+
+
+
+        m_game->window().setView(view);
+
     }
 }
 

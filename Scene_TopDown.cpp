@@ -51,6 +51,8 @@ void Scene_TopDown::loadLevel(const std::string & fileName)
 {
     m_entityManager = EntityManager();
 
+    m_cameraType = Camera::Box;
+
     loadConfigFile(fileName);
 
     spawnPlayer();
@@ -99,7 +101,8 @@ void Scene_TopDown::loadConfigFile(const std::string & fileName)
 void Scene_TopDown::spawnPlayer()
 {
     auto player = m_entityManager.addEntity("Player");
-    player->addComponent<CTransform>(Vec2(100.0f, 50.0f), Vec2(1.0f, 1.0f), Vec2(1.0f, 1.0f), 0.0f);
+    sf::Vector2u windowSize = m_game->window().getSize();
+    player->addComponent<CTransform>(Vec2((float)windowSize.x / 2.0f, (float)windowSize.y / 2.0f), Vec2(1.0f, 1.0f), Vec2(1.0f, 1.0f), 0.0f);
     player->addComponent<CShape>(m_playerConfig.shapeRadius, m_playerConfig.shapeVertices,
                                  sf::Color(m_playerConfig.fillColorRed, m_playerConfig.fillColorGreen, m_playerConfig.fillColorBlue, 0),
                                  sf::Color(m_playerConfig.outlineColorRed, m_playerConfig.outlineColorGreen, m_playerConfig.outlineColorBlue),
