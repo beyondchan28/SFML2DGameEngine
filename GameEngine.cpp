@@ -115,6 +115,7 @@ void GameEngine::update()
 
     //loop all the systems here
     currentScene()->update();
+    currentScene()->sCamera();
 
 
     window().display();

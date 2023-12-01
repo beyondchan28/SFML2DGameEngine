@@ -18,6 +18,23 @@ void Scene::registerAction(sf::Keyboard::Key inputKey, const std::string & actio
     m_actionMap.insert(std::pair<sf::Keyboard::Key, std::string>(inputKey, actionName));
 }
 
+void Scene::sCamera()
+{
+    if(m_cameraType == Camera::Default)
+    {
+        std::cerr << "work" << "\n";
+    }
+    else if(m_cameraType == Camera::FollowX)
+    {
+        //Centered view/camera if player going right enough
+        auto & pPos = m_entityManager.getEntities("Player")[0]->getComponent<CTransform>().pos;
+        float windowCenterX = std::max(m_game->window().getSize().x / 2.0f, pPos.x );
+        sf::View view = m_game->window().getView();
+        view.setCenter(windowCenterX, m_game->window().getSize().y - view.getCenter().y);
+        m_game->window().setView(view);
+    }
+}
+
 size_t Scene::windowWidth()
 {
     return m_game->window().getSize().x;

@@ -9,6 +9,15 @@ class GameEngine;
 
 typedef std::map<sf::Keyboard::Key, std::string> ActionMap;
 
+namespace Camera
+{
+    enum Types
+    {
+        FollowX, FollowXY, Box, Zelda, Default
+    };
+}
+
+
 class Scene
 {
 protected:
@@ -18,6 +27,7 @@ protected:
     bool m_paused = false;
     bool m_hasEnded = false;
     size_t currentFrame = 0;
+    Camera::Types m_cameraType = Camera::Default;
 
     //virtual void onEnd();
     void setPaused(bool paused);
@@ -29,9 +39,11 @@ public:
     virtual void update() = 0;
     virtual void sDoAction(const Action & action) = 0;
     virtual void sRender() = 0;
+    void sCamera();
 
 //    virtual void doAction(const Action & action) = 0; //dont need this for now
     //void simulate(const size_t frames);
+
     void registerAction(sf::Keyboard::Key inputKey, const std::string & actionName);
     const ActionMap & getActionMap() const;
 

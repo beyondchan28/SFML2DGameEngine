@@ -50,6 +50,8 @@ void Scene_Play::loadLevel(const std::string & fileName)
 
     loadConfigFile(fileName);
 
+    m_cameraType = Camera::FollowX;
+
     spawnPlayer();
 }
 
@@ -145,12 +147,7 @@ void Scene_Play::sRender()
         m_game->window().clear(sf::Color(50,50,150));
     }
 
-    //Centered view/camera if player going right enough
-    auto & pPos = m_player->getComponent<CTransform>().pos;
-    float windowCenterX = std::max(m_game->window().getSize().x / 2.0f, pPos.x );
-    sf::View view = m_game->window().getView();
-    view.setCenter(windowCenterX, m_game->window().getSize().y - view.getCenter().y);
-    m_game->window().setView(view);
+
 
     sf::Text levelText;
     levelText.setFont(m_game->assets().getFont("fontName"));

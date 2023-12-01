@@ -27,7 +27,7 @@ protected:
     const Vec2 m_gridSize = {64, 64};
     sf::Text m_gridText;
 
-    Physics m_physics;
+    Physics m_physics; // this should be accessible for all scene
 
     struct PlayerConfig m_playerConfig;
 
