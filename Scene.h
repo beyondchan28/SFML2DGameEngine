@@ -29,6 +29,8 @@ protected:
     bool m_paused = false;
     bool m_hasEnded = false;
     size_t currentFrame = 0;
+
+    bool m_moveCam = false;
     Camera::Types m_cameraType = Camera::Default;
 
     //virtual void onEnd();
@@ -42,7 +44,6 @@ public:
     virtual void sDoAction(const Action & action) = 0;
     virtual void sRender() = 0;
     void sCamera();
-    bool checkBoxTrap();
 
 //    virtual void doAction(const Action & action) = 0; //dont need this for now
     //void simulate(const size_t frames);

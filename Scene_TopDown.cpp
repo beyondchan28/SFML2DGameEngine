@@ -127,7 +127,7 @@ void Scene_TopDown::update(sf::Time deltaTime)
 
     if(!m_paused)
     {
-        sMovement();
+        sMovement(deltaTime);
         sCollision();
 
         sAnimation();
@@ -472,7 +472,7 @@ void Scene_TopDown::sCollision()
 }
 
 
-void Scene_TopDown::sMovement()
+void Scene_TopDown::sMovement(sf::Time deltaTime)
 {
     m_player->getComponent<CTransform>().velocity = {0, 0};
 
@@ -501,7 +501,7 @@ void Scene_TopDown::sMovement()
         //std::cout << m_player->cTransform->velocity.length() << "\n";
     }
 
-    m_player->getComponent<CTransform>().pos += (m_player->getComponent<CTransform>().velocity * m_playerConfig.speed); // velocity times speed
+    m_player->getComponent<CTransform>().pos += (m_player->getComponent<CTransform>().velocity * 400.0f * deltaTime.asSeconds()  ); // velocity times speed
 
 
 //    std::cout << m_player->getComponent<CTransform>().velocity.x << " ";

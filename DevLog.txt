@@ -84,6 +84,7 @@ Implement advance game loop (X)
 
 Move on to implementing Camera
 - implement linear interpolation (X)
+- the box trap didnt work when intersect diagonally ()
 
 Reference : the video lecture & the website is enough to implement
 

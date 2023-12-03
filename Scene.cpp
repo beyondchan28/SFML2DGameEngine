@@ -18,64 +18,6 @@ void Scene::registerAction(sf::Keyboard::Key inputKey, const std::string & actio
     m_actionMap.insert(std::pair<sf::Keyboard::Key, std::string>(inputKey, actionName));
 }
 
-bool Scene::checkBoxTrap()
-{
-    auto & pPos = m_entityManager.getEntities("Player")[0]->getComponent<CTransform>().pos;
-    sf::View view = m_game->window().getView();
-    const sf::Vector2f & windowCenter = view.getCenter();
-
-    float halfSize = 50.f;
-//        float windowCenterX = std::max(m_game->window().getSize().x / 2.0f, pPos.x );
-//        float windowCenterY = std::max(m_game->window().getSize().y / 2.0f, pPos.y );
-
-    Vec2 topLeft = {windowCenter.x - halfSize, windowCenter.y - halfSize};
-    Vec2 topRight = {windowCenter.x + halfSize, windowCenter.y - halfSize};
-    Vec2 botLeft = {windowCenter.x - halfSize, windowCenter.y + halfSize};
-    Vec2 botRight = {windowCenter.x + halfSize, windowCenter.y + halfSize};
-
-    drawLine(topLeft, botLeft);
-    drawLine(topLeft, topRight);
-    drawLine(topRight, botRight);
-    drawLine(botLeft, botRight);
-
-    if(pPos.x < topLeft.x && pPos.x < botLeft.x)
-    {
-        if(pPos.y > topLeft.y && pPos.y < botLeft.y)
-        {
-            return true;
-        }
-    }
-    else if(pPos.x > topRight.x && pPos.x > botRight.x)
-    {
-        if(pPos.y > topRight.y && pPos.y < botRight.y)
-        {
-            return true;
-
-        }
-    }
-    else if(pPos.y < topLeft.y && pPos.y < topRight.y)
-    {
-        if(pPos.x > topLeft.x && pPos.x < topRight.x)
-        {
-            return true;
-
-        }
-    }
-
-    else if(pPos.y > botLeft.y && pPos.y > botRight.y)
-    {
-        if(pPos.x > botLeft.x && pPos.x < botRight.x)
-        {
-            return true;
-
-        }
-    }
-
-    return false;
-
-}
-
-bool moveCam = false;
 
 void Scene::sCamera()
 {
@@ -98,32 +40,42 @@ void Scene::sCamera()
         auto & pPos = m_entityManager.getEntities("Player")[0]->getComponent<CTransform>().pos;
         sf::View view = m_game->window().getView();
         const sf::Vector2f & windowCenter = view.getCenter();
+        float boxSize = 50.f;
+        float camSpeed = 300.f;
 
-        float camSpeed = 400.f;
-
+        float dx = std::abs(pPos.x - windowCenter.x);
+        float dy = std::abs(pPos.y - windowCenter.y);
+        bool isOutsideBox = dx > boxSize || dy > boxSize;
         bool isCenter = (pPos.x == windowCenter.x && pPos.y == windowCenter.y);
 
         float lerpX = m_physics.approach(pPos.x, windowCenter.x, m_game->deltaTime().asSeconds() * camSpeed);
         float lerpY = m_physics.approach(pPos.y, windowCenter.y, m_game->deltaTime().asSeconds() * camSpeed);
 
-        if(checkBoxTrap() && moveCam == false)
+        if(isOutsideBox && m_moveCam == false)
         {
-            moveCam = true;
+            m_moveCam = true;
         }
 
-        if (moveCam)
+        if (m_moveCam)
         {
             view.setCenter(lerpX, lerpY);
             m_game->window().setView(view);
             if (isCenter)
             {
-                moveCam = false;
+                m_moveCam = false;
             }
         }
 
+        //render the box trap
+        Vec2 topLeft = {windowCenter.x - boxSize, windowCenter.y - boxSize};
+        Vec2 topRight = {windowCenter.x + boxSize, windowCenter.y - boxSize};
+        Vec2 botLeft = {windowCenter.x - boxSize, windowCenter.y + boxSize};
+        Vec2 botRight = {windowCenter.x + boxSize, windowCenter.y + boxSize};
 
-
-
+        drawLine(topLeft, botLeft);
+        drawLine(topLeft, topRight);
+        drawLine(topRight, botRight);
+        drawLine(botLeft, botRight);
 
     }
 }

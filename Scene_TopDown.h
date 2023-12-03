@@ -37,7 +37,7 @@ protected:
     void sDoAction(const Action & action);
     void sAnimation();
     void sRender();
-    void sMovement();
+    void sMovement(sf::Time deltaTime);
     void sGravity();
     void sCollision();
 
