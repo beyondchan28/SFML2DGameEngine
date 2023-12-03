@@ -24,6 +24,10 @@ void Scene::sCamera()
     if(m_cameraType == Camera::Default)
     {
 //        std::cerr << "work" << "\n";
+        sf::View view = m_game->window().getView();
+        sf::Vector2f windowCenter = {view.getSize().x / 2.0f, view.getSize().y / 2.0f};
+        view.setCenter(windowCenter.x, windowCenter.y);
+        m_game->window().setView(view);
 
     }
     else if(m_cameraType == Camera::FollowX)
