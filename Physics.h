@@ -22,4 +22,6 @@ public:
     Vec2 getOverlapDirection(std::shared_ptr<Entity> a, std::shared_ptr<Entity> b);
 
     Intersect lineIntersection(Vec2 a, Vec2 b, Vec2 c, Vec2 d);
+
+    float approach(float goal, float current, float dt);
 };

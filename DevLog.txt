@@ -80,7 +80,10 @@ Implementing LineSegment Intersection/RayCasting/Light
 - making the polygon mesh collision and intersection (Vertex based mesh)
 - implement how to calculate and firing the raycast
 
+Implement advance game loop
+
 Move on to implementing Camera
+- implement linear interpolation
 
 Reference : the video lecture & the website is enough to implement
 

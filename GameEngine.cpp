@@ -45,6 +45,11 @@ Assets & GameEngine::assets()
     return m_assets;
 }
 
+const sf::Time & GameEngine::deltaTime()
+{
+    return m_deltaTime;
+}
+
 void GameEngine::run()
 {
     while(isRunning())
@@ -110,11 +115,12 @@ void GameEngine::deleteScene()
 
 void GameEngine::update()
 {
+    m_deltaTime = m_clock.restart();
 
     sUserInput();
 
     //loop all the systems here
-    currentScene()->update();
+    currentScene()->update(m_deltaTime);
     currentScene()->sCamera();
 
 

@@ -38,10 +38,11 @@ public:
     Scene();
     Scene(GameEngine * gameEngine);
 
-    virtual void update() = 0;
+    virtual void update(sf::Time deltaTime) = 0;
     virtual void sDoAction(const Action & action) = 0;
     virtual void sRender() = 0;
     void sCamera();
+    bool checkBoxTrap();
 
 //    virtual void doAction(const Action & action) = 0; //dont need this for now
     //void simulate(const size_t frames);

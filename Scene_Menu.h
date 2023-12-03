@@ -15,7 +15,7 @@ protected:
     size_t m_selectedMenuIndex = 0;
 
     void init();
-    void update();
+    void update(sf::Time deltaTime);
     void onEnd();
     void sDoAction(const Action& action);
 

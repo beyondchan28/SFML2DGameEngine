@@ -18,6 +18,65 @@ void Scene::registerAction(sf::Keyboard::Key inputKey, const std::string & actio
     m_actionMap.insert(std::pair<sf::Keyboard::Key, std::string>(inputKey, actionName));
 }
 
+bool Scene::checkBoxTrap()
+{
+    auto & pPos = m_entityManager.getEntities("Player")[0]->getComponent<CTransform>().pos;
+    sf::View view = m_game->window().getView();
+    const sf::Vector2f & windowCenter = view.getCenter();
+
+    float halfSize = 50.f;
+//        float windowCenterX = std::max(m_game->window().getSize().x / 2.0f, pPos.x );
+//        float windowCenterY = std::max(m_game->window().getSize().y / 2.0f, pPos.y );
+
+    Vec2 topLeft = {windowCenter.x - halfSize, windowCenter.y - halfSize};
+    Vec2 topRight = {windowCenter.x + halfSize, windowCenter.y - halfSize};
+    Vec2 botLeft = {windowCenter.x - halfSize, windowCenter.y + halfSize};
+    Vec2 botRight = {windowCenter.x + halfSize, windowCenter.y + halfSize};
+
+    drawLine(topLeft, botLeft);
+    drawLine(topLeft, topRight);
+    drawLine(topRight, botRight);
+    drawLine(botLeft, botRight);
+
+    if(pPos.x < topLeft.x && pPos.x < botLeft.x)
+    {
+        if(pPos.y > topLeft.y && pPos.y < botLeft.y)
+        {
+            return true;
+        }
+    }
+    else if(pPos.x > topRight.x && pPos.x > botRight.x)
+    {
+        if(pPos.y > topRight.y && pPos.y < botRight.y)
+        {
+            return true;
+
+        }
+    }
+    else if(pPos.y < topLeft.y && pPos.y < topRight.y)
+    {
+        if(pPos.x > topLeft.x && pPos.x < topRight.x)
+        {
+            return true;
+
+        }
+    }
+
+    else if(pPos.y > botLeft.y && pPos.y > botRight.y)
+    {
+        if(pPos.x > botLeft.x && pPos.x < botRight.x)
+        {
+            return true;
+
+        }
+    }
+
+    return false;
+
+}
+
+bool moveCam = false;
+
 void Scene::sCamera()
 {
     if(m_cameraType == Camera::Default)
@@ -40,57 +99,31 @@ void Scene::sCamera()
         sf::View view = m_game->window().getView();
         const sf::Vector2f & windowCenter = view.getCenter();
 
-        float halfSize = 50.f;
+        float camSpeed = 400.f;
 
-//        float windowCenterX = std::max(m_game->window().getSize().x / 2.0f, pPos.x );
-//        float windowCenterY = std::max(m_game->window().getSize().y / 2.0f, pPos.y );
+        bool isCenter = (pPos.x == windowCenter.x && pPos.y == windowCenter.y);
 
-        Vec2 topLeft = {windowCenter.x - halfSize, windowCenter.y - halfSize};
-        Vec2 topRight = {windowCenter.x + halfSize, windowCenter.y - halfSize};
-        Vec2 botLeft = {windowCenter.x - halfSize, windowCenter.y + halfSize};
-        Vec2 botRight = {windowCenter.x + halfSize, windowCenter.y + halfSize};
+        float lerpX = m_physics.approach(pPos.x, windowCenter.x, m_game->deltaTime().asSeconds() * camSpeed);
+        float lerpY = m_physics.approach(pPos.y, windowCenter.y, m_game->deltaTime().asSeconds() * camSpeed);
 
-        drawLine(topLeft, botLeft);
-        drawLine(topLeft, topRight);
-        drawLine(topRight, botRight);
-        drawLine(botLeft, botRight);
-
-        if(pPos.x < topLeft.x && pPos.x < botLeft.x)
+        if(checkBoxTrap() && moveCam == false)
         {
-            if(pPos.y > topLeft.y && pPos.y < botLeft.y)
-            {
-                view.setCenter(pPos.x, pPos.y);            }
-        }
-        else if(pPos.x > topRight.x && pPos.x > botRight.x)
-        {
-            if(pPos.y > topRight.y && pPos.y < botRight.y)
-            {
-                view.setCenter(pPos.x, pPos.y);
-
-            }
-        }
-        else if(pPos.y < topLeft.y && pPos.y < topRight.y)
-        {
-            if(pPos.x > topLeft.x && pPos.x < topRight.x)
-            {
-                view.setCenter(pPos.x, pPos.y);
-            }
+            moveCam = true;
         }
 
-        //why the fuck is this wrong ?
-        else if(pPos.y > botLeft.y && pPos.y > botRight.y)
+        if (moveCam)
         {
-            if(pPos.x > botLeft.x && pPos.x < botRight.x)
+            view.setCenter(lerpX, lerpY);
+            m_game->window().setView(view);
+            if (isCenter)
             {
-                view.setCenter(pPos.x, pPos.y);
-
+                moveCam = false;
             }
         }
 
 
 
 
-        m_game->window().setView(view);
 
     }
 }

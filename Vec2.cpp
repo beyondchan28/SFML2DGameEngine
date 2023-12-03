@@ -96,3 +96,23 @@ float Vec2::cross(const Vec2 & b)
 {
     return x * b.y - y * b.x;
 }
+
+Vec2 Vec2::approach(Vec2 & goal, Vec2 & current, float dt)
+{
+    Vec2 diff = goal - current;
+
+    if (diff.x > dt && diff.y > dt)
+    {
+        current.x += dt;
+        current.y += dt;
+        return current;
+    }
+    if (diff.x < -dt && diff.y < -dt)
+    {
+        current.x -= dt;
+        current.y -= dt;
+        return current;
+    }
+
+    return goal;
+}

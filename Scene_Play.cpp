@@ -116,14 +116,14 @@ void Scene_Play::spawnPlayer()
 //    std::cout << m_entityManager.getEntities("Player")[0]->tag() << "\n";
 }
 
-void Scene_Play::update()
+void Scene_Play::update(sf::Time deltaTime)
 {
     m_entityManager.update();
 
     if(!m_paused)
     {
         sGravity();
-        sMovement();
+        sMovement(deltaTime);
         sCollision();
 
         sAnimation();
@@ -371,7 +371,7 @@ void Scene_Play::sGravity()
     }
 }
 
-void Scene_Play::sMovement()
+void Scene_Play::sMovement(sf::Time deltaTime)
 {
     m_player->getComponent<CTransform>().velocity.x = 0;
 
@@ -408,7 +408,7 @@ void Scene_Play::sMovement()
     // this is buggy
     if (m_player->getComponent<CInput>().jump)
     {
-        m_player->getComponent<CTransform>().velocity.y -= m_playerConfig.speed * 2;
+        m_player->getComponent<CTransform>().velocity.y -= m_playerConfig.speed;
     }
 
     //std::cout << m_player->cTransform->velocity.x << "," << m_player->cTransform->velocity.y  << "\n";
@@ -418,7 +418,7 @@ void Scene_Play::sMovement()
 //        //std::cout << m_player->cTransform->velocity.length() << "\n";
 //    }
 
-    m_player->getComponent<CTransform>().pos += (m_player->getComponent<CTransform>().velocity * m_playerConfig.speed ); // velocity times speed
+    m_player->getComponent<CTransform>().pos += (m_player->getComponent<CTransform>().velocity * 200.f * deltaTime.asSeconds() ); // velocity times speed
 
 
 //    std::cout << m_player->getComponent<CTransform>().velocity.x << " ";

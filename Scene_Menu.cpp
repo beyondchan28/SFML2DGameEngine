@@ -34,7 +34,7 @@ void Scene_Menu::init()
     m_menuText.setString(m_title);
 }
 
-void Scene_Menu::update()
+void Scene_Menu::update(sf::Time deltaTime)
 {
     sRender();
 

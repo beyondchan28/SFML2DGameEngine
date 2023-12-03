@@ -12,6 +12,9 @@ class GameEngine
 {
 protected:
     sf::RenderWindow m_window;
+    sf::Clock m_clock;
+    sf::Time m_deltaTime;
+
     Assets m_assets;
     std::string m_currentScene;
     SceneMap m_sceneMap;
@@ -37,5 +40,6 @@ public:
     const Assets & assets() const;
     Assets & assets();
     bool isRunning();
+    const sf::Time & deltaTime();
 };
 

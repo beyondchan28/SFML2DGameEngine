@@ -121,7 +121,7 @@ void Scene_TopDown::spawnPlayer()
 //    std::cout << m_entityManager.getEntities("Player")[0]->tag() << "\n";
 }
 
-void Scene_TopDown::update()
+void Scene_TopDown::update(sf::Time deltaTime)
 {
     m_entityManager.update();
 

@@ -30,6 +30,7 @@ public:
 
     float length() const;
     float cross(const Vec2 & b);
+    Vec2 approach(Vec2 & goal, Vec2 & current, float dt);
     void normalized();
 
 };

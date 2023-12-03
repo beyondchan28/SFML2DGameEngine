@@ -33,11 +33,11 @@ protected:
     void loadConfigFile(const std::string & filePath);
     void spawnPlayer();
 
-    void update();
+    void update(sf::Time deltaTime);
     void sDoAction(const Action & action);
     void sAnimation();
     void sRender();
-    void sMovement();
+    void sMovement(sf::Time deltaTime);
     void sGravity();
     void sCollision();
 

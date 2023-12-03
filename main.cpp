@@ -9,19 +9,19 @@
 #include <memory>
 #include <vector>
 
-class Object
-{
-    int a = 5;
-
-public:
-    Object(int num) : a(num) {};
-
-    int & getNumber()
-    {
-        return a;
-    }
-};
-
+//class Object
+//{
+//    int a = 5;
+//
+//public:
+//    Object(int num) : a(num) {};
+//
+//    int & getNumber()
+//    {
+//        return a;
+//    }
+//};
+//
 
 int main()
 {
