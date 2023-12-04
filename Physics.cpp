@@ -82,47 +82,30 @@ Vec2 Physics::getOverlapDirection(std::shared_ptr<Entity> a, std::shared_ptr<Ent
     if (a->hasComponent<CBoundingBox>() && b->hasComponent<CBoundingBox>())
     {
         Vec2 aPos = a->getComponent<CTransform>().pos;
-        Vec2 aHalfSize = a->getComponent<CBoundingBox>().halfSize;
 
         Vec2 bPos = b->getComponent<CTransform>().pos;
         Vec2 bHalfSize = b->getComponent<CBoundingBox>().halfSize;
 
         Vec2 overlapDir = {0,0};
 
-        float aTopLeftX = aPos.x - aHalfSize.x;
-        float aTopLeftY = aPos.y - aHalfSize.y;
+        if (aPos.y < bPos.y - bHalfSize.y)
+        {
+            overlapDir.y = -1;
+        }
+        else if (aPos.y > bPos.y + bHalfSize.y)
+        {
+            overlapDir.y = 1;
+        }
+        else if (aPos.x < bPos.x - bHalfSize.x)
+        {
+            overlapDir.x = -1;
+        }
+        else if (aPos.x > bPos.x + bHalfSize.x)
+        {
+            overlapDir.x = 1;
+        }
 
-        float aBotRightX = aPos.x + aHalfSize.x;
-        float aBotRightY = aPos.y + aHalfSize.y;
-
-        float bTopLeftX = bPos.x - bHalfSize.x;
-        float bTopLeftY = bPos.y - bHalfSize.y;
-
-        float bBotRightX = bPos.x + bHalfSize.x;
-        float bBotRightY = bPos.y + bHalfSize.y;
-
-        // there is something wrong on this. its not that efficient. not that good
-        float dYTB = std::abs(aTopLeftY - bBotRightY);
-        float dYTT = std::abs(aTopLeftY - bTopLeftY);
-
-        float dYBB = std::abs(aBotRightY - bBotRightY);
-        float dYBT = std::abs(aBotRightY - bTopLeftY);
-
-        float dXTT = std::abs(aTopLeftX - bTopLeftX);
-        float dXTB = std::abs(aTopLeftX - bBotRightX);
-
-        float dXBT = std::abs(aBotRightX - bTopLeftX);
-        float dXBB = std::abs(aBotRightX - bBotRightX);
-
-        bool isTop = dYTT > dYBT;
-        bool isBot = dYTB < dYBB;
-        bool isLeft = dXBT < dXTT;
-        bool isRight= dXBB > dXTB;
-
-        if(isRight) { overlapDir = {1, 0}; }
-        else if(isLeft) { overlapDir = {-1, 0}; }
-        else if(isBot) { overlapDir = {0, 1}; }
-        else if(isTop) { overlapDir = {0, -1}; }
+        std::cerr << overlapDir.x << " " << overlapDir.y << "\n";
 
         return overlapDir;
     }

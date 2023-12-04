@@ -10,7 +10,7 @@
 #include <queue>
 
 std::queue<size_t> tilesId;
-std::vector<size_t> collidedTilesId;
+std::deque<Entity> collidedTiles;
 sf::Vector2f playerSpriteDir = {1.0f, 1.0f};
 
 Scene_Play::Scene_Play(GameEngine * gameEngine, const std::string & levelPath)
@@ -257,91 +257,119 @@ void Scene_Play::sDoAction(const Action & action)
 
 void Scene_Play::sCollision()
 {
+
+    //player fall Collision
     for(auto & t : m_entityManager.getEntities("Tile"))
     {
-        const Vec2 & playerPos = m_player->getComponent<CTransform>().pos;
-        const Vec2 & tilePos = t->getComponent<CTransform>().pos;
+        const Vec2 & pPos = m_player->getComponent<CTransform>().pos;
+        const Vec2 & tPos = t->getComponent<CTransform>().pos;
 
-        bool isTileInRadius = m_physics.isPointInCircle(playerPos, (2.0f * 64.0f + 48.0f), tilePos)
-                              ;
-        if(isTileInRadius)
+        Vec2 overlapPos = m_physics.getOverlap(m_player, t);
+        bool isOverlap = m_physics.isOverlap(overlapPos);
+        if(isOverlap)
         {
-            tilesId.push(t->id());
-        }
-    }
-
-    while (!tilesId.empty())
-    {
-        for (auto & t : m_entityManager.getEntities("Tile"))
-        {
-            if(tilesId.front() == t->id())
+            m_player->getComponent<CGravity>().useGravity = false;
+            collidedTiles.push_back()
+//                Vec2 overlapDir = m_physics.getOverlapDirection(m_player, t);
+            const Vec2 & prevOverlap = m_player->getComponent<CTransform>().prevPos;
+            Vec2 overlapDir = m_physics.getOverlapDirection(m_player, t);
+            if (prevOverlap != overlapDir)
             {
-                Vec2 overlapPos =  m_physics.getOverlap(m_player, t);
-                bool isOverlap = m_physics.isOverlap(overlapPos);
-
-                if(isOverlap)
-                {
-                    size_t tileId = tilesId.front();
-                    collidedTilesId.push_back(tileId);
-
-//                    std::cout << tileId << "\n";
-
-                    Vec2 overlapDir;
-                    if (t->id() == tileId)
-                    {
-                        overlapDir = m_physics.getOverlapDirection(m_player, t);
-                        m_player->getComponent<CTransform>().pos += (overlapDir * overlapPos);
-//                        std::cout << overlapDir.y << "\n";
-                        if(overlapDir.y < 0.0f)
-                        {
-                            m_player->getComponent<CGravity>().useGravity = false;
-                            m_player->getComponent<CTransform>().velocity.y = 0;
-//                            std::cout << "overlapping" << "\n";
-                        }
-                    }
-//                    std::cout << tileId << "\n";
-                }
+                m_player->getComponent<CTransform>().prevPos = overlapDir;
             }
-        }
-        tilesId.pop();
-    }
 
-    for (size_t tId : collidedTilesId)
-    {
-        for( auto & t : m_entityManager.getEntities("Tile"))
-        {
-            if(m_player->getComponent<CGravity>().useGravity == false)
-            {
-
-                if(t->id() == tId)
-                {
-                    Vec2 pPos = m_player->getComponent<CTransform>().pos;
-                    Vec2 pHalfSize = m_player->getComponent<CBoundingBox>().halfSize;
-
-                    Vec2 tPos = t->getComponent<CTransform>().pos;
-                    Vec2 tHalfSize = t->getComponent<CBoundingBox>().halfSize;
-
-                    float leftLimit = tPos.x - tHalfSize.x - (2 * pHalfSize.x);
-                    float rightLimit = tPos.x + tHalfSize.x + (2 * pHalfSize.x);
-
-
-                    //                    std::cout << pPos.x << "\n";
-                    //                    std::cout << tPos.x  << "\n";
-                    //                    std::cout << leftLimit << "\n";
-                    //                    std::cout << rightLimit << "\n";
-
-                    bool isNotOverlapTop = pPos.x < leftLimit ||  pPos.x > rightLimit;
-                    if (isNotOverlapTop)
-                    {
-//                        std::cout << "not overlap" << "\n";
-                        m_player->getComponent<CGravity>().useGravity = true;
-                        //remove the tileId from the Vector
-
-                    }
-                }
-            }
+            m_player->getComponent<CTransform>().pos += (overlapPos * prevOverlap);
+//                m_player->getComponent<CGravity>().useGravity = false;
         }
     }
+
+
+
+//    for(auto & t : m_entityManager.getEntities("Tile"))
+//    {
+//        const Vec2 & playerPos = m_player->getComponent<CTransform>().pos;
+//        const Vec2 & tilePos = t->getComponent<CTransform>().pos;
+//
+//        bool isTileInRadius = m_physics.isPointInCircle(playerPos, (2.0f * 64.0f + 48.0f), tilePos);
+//        if(isTileInRadius)
+//        {
+//            tilesId.push(t->id());
+//        }
+//    }
+//
+//    while (!tilesId.empty())
+//    {
+//        for (auto & t : m_entityManager.getEntities("Tile"))
+//        {
+//            if(tilesId.front() == t->id())
+//            {
+//                Vec2 overlapPos =  m_physics.getOverlap(m_player, t);
+//                bool isOverlap = m_physics.isOverlap(overlapPos);
+//
+//                if(isOverlap)
+//                {
+//                    size_t tileId = tilesId.front();
+//                    collidedTilesId.push_back(tileId);
+//
+////                    std::cout << tileId << "\n";
+//
+//                    Vec2 overlapDir;
+//                    if (t->id() == tileId)
+//                    {
+//                        overlapDir = m_physics.getOverlapDirection(m_player, t);
+//                        m_player->getComponent<CTransform>().pos += (overlapDir * overlapPos);
+////                        std::cout << overlapDir.y << "\n";
+//                        if(overlapDir.y < 0.0f)
+//                        {
+//                            m_player->getComponent<CGravity>().useGravity = false;
+////                            m_player->getComponent<CTransform>().velocity.y = 0;
+////                            std::cout << "overlapping" << "\n";
+//                        }
+//                    }
+////                    std::cout << tileId << "\n";
+//                }
+//            }
+//        }
+//        tilesId.pop();
+//    }
+//
+//    if(m_player->getComponent<CGravity>().useGravity == false)
+//    {
+//        for (size_t tId : collidedTilesId)
+//        {
+//            for( auto & t : m_entityManager.getEntities("Tile"))
+//            {
+//
+//
+//                if(t->id() == tId)
+//                {
+//                    Vec2 pPos = m_player->getComponent<CTransform>().pos;
+//                    Vec2 pHalfSize = m_player->getComponent<CBoundingBox>().halfSize;
+//
+//                    Vec2 tPos = t->getComponent<CTransform>().pos;
+//                    Vec2 tHalfSize = t->getComponent<CBoundingBox>().halfSize;
+//
+//                    float leftLimit = tPos.x - tHalfSize.x;
+//                    float rightLimit = tPos.x + tHalfSize.x;
+//
+//
+//                    //                    std::cout << pPos.x << "\n";
+//                    //                    std::cout << tPos.x  << "\n";
+//                    //                    std::cout << leftLimit << "\n";
+//                    //                    std::cout << rightLimit << "\n";
+//
+//                    bool isNotOverlapTop = pPos.x < leftLimit ||  pPos.x > rightLimit;
+//                    if (isNotOverlapTop)
+//                    {
+////                        std::cout << "not overlap" << "\n";
+//                        m_player->getComponent<CGravity>().useGravity = true;
+//                        //remove the tileId from the Vector
+//
+//                    }
+//                }
+//            }
+//        }
+//    }
 
 
 
@@ -349,31 +377,47 @@ void Scene_Play::sCollision()
 
 void Scene_Play::sGravity()
 {
-    for(auto & e: m_entityManager.getEntities())
+    if(m_player->hasComponent<CGravity>())
     {
-        if(e->hasComponent<CGravity>())
+        float & eVelY = m_player->getComponent<CTransform>().velocity.y;
+        float & gravity = m_player->getComponent<CGravity>().gravity;
+
+        if (m_player->getComponent<CGravity>().useGravity == true)
         {
-            float & eVelY = e->getComponent<CTransform>().velocity.y;
-            float & gravity = e->getComponent<CGravity>().gravity;
-
-            if (m_player->getComponent<CGravity>().useGravity == true)
-            {
-                eVelY = 1.0f;
-            }
-            else if (m_player->getComponent<CGravity>().useGravity == false)
-            {
-                eVelY = 0.0f;
-            }
-
-
-//            eVelY += std::clamp(eVelY, -2.0f, gravity);
+            eVelY = 1.0f;
+        }
+        else if (m_player->getComponent<CGravity>().useGravity == false)
+        {
+            eVelY = 0.0f;
         }
     }
+
+//    for(auto & e: m_entityManager.getEntities())
+//    {
+//        if(e->hasComponent<CGravity>())
+//        {
+//            float & eVelY = e->getComponent<CTransform>().velocity.y;
+//            float & gravity = e->getComponent<CGravity>().gravity;
+//
+//            if (m_player->getComponent<CGravity>().useGravity == true)
+//            {
+//                eVelY = 1.0f;
+//            }
+//            else if (m_player->getComponent<CGravity>().useGravity == false)
+//            {
+//                eVelY = 0.0f;
+//            }
+//
+//
+////            eVelY += std::clamp(eVelY, -2.0f, gravity);
+//        }
+//    }
 }
 
 void Scene_Play::sMovement(sf::Time deltaTime)
 {
     m_player->getComponent<CTransform>().velocity.x = 0;
+
 
     if (m_player->getComponent<CInput>().left)
     {
@@ -386,7 +430,7 @@ void Scene_Play::sMovement(sf::Time deltaTime)
         m_player->getComponent<CTransform>().velocity.x = 1.0f;
     }
     // need to find better condition than this
-    else if (m_player->getComponent<CTransform>().velocity.y != 0.0f)
+    else if (m_player->getComponent<CGravity>().useGravity)
     {
         m_player->getComponent<CState>().state = "air";
     }
@@ -408,6 +452,7 @@ void Scene_Play::sMovement(sf::Time deltaTime)
     // this is buggy
     if (m_player->getComponent<CInput>().jump)
     {
+
         m_player->getComponent<CTransform>().velocity.y -= m_playerConfig.speed;
     }
 
@@ -418,7 +463,14 @@ void Scene_Play::sMovement(sf::Time deltaTime)
 //        //std::cout << m_player->cTransform->velocity.length() << "\n";
 //    }
 
-    m_player->getComponent<CTransform>().pos += (m_player->getComponent<CTransform>().velocity * 200.f * deltaTime.asSeconds() ); // velocity times speed
+    float speedLerp = m_physics.approach( m_player->getComponent<CTransform>().velocity.x * m_playerConfig.speed,
+                                          m_player->getComponent<CTransform>().velocity.x,
+                                          deltaTime.asSeconds() * 100.0f);
+
+
+
+    m_player->getComponent<CTransform>().pos.y += (m_player->getComponent<CTransform>().velocity.y * deltaTime.asSeconds() *  200.f  ); // velocity times speed
+    m_player->getComponent<CTransform>().pos.x += (speedLerp * deltaTime.asSeconds() * 100.0f); // velocity times speed
 
 
 //    std::cout << m_player->getComponent<CTransform>().velocity.x << " ";
@@ -472,7 +524,8 @@ void Scene_Play::sAnimation()
         }
     }
 
-    std::cerr << m_player->getComponent<CState>().state << "\n";
+//    std::cerr << m_player->getComponent<CState>().state << "\n";
+//    std::cerr << m_player->getComponent<CGravity>().useGravity << "\n";
 }
 
 void Scene_Play::onEnd()
