@@ -77,6 +77,7 @@ Implementing LineSegment Intersection/RayCasting/Light
 - making the line segment intersection()
     + the line segment didnt work as intended and not changing to the intersection point
     + calculate their angle, sort it then connect clockwise
+    + stil dont know how to sort the ray cast
 - making the polygon mesh collision and intersection (Vertex based mesh)
 - implement how to calculate and firing the raycast
 
@@ -84,7 +85,10 @@ Implement advance game loop (X)
 
 Move on to implementing Camera
 - implement linear interpolation (X)
-- the box trap didnt work when intersect diagonally ()
+- the box trap didnt work when intersect diagonally (X)
+
+Implementing pathfinding and steering
+- Implement A* algorithm ()
 
 Reference : the video lecture & the website is enough to implement
 

@@ -255,6 +255,9 @@ void Scene_Play::sDoAction(const Action & action)
     }
 }
 
+
+// need to figure out on what condition the gravity is true
+// maybe there is something to do with previous overlap ?
 void Scene_Play::sCollision()
 {
 
@@ -269,7 +272,7 @@ void Scene_Play::sCollision()
         if(isOverlap)
         {
             m_player->getComponent<CGravity>().useGravity = false;
-            collidedTiles.push_back()
+//            collidedTiles.push_back();
 //                Vec2 overlapDir = m_physics.getOverlapDirection(m_player, t);
             const Vec2 & prevOverlap = m_player->getComponent<CTransform>().prevPos;
             Vec2 overlapDir = m_physics.getOverlapDirection(m_player, t);

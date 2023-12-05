@@ -57,6 +57,8 @@ protected:
     void drawCollision(std::shared_ptr<Entity> e, bool draw);
     void drawGrid(bool draw);
 
+    void AStarPathfinding();
+
 public:
     Scene_TopDown(GameEngine * gameEngine, const std::string & levelPath);
 

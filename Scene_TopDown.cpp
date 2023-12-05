@@ -14,6 +14,18 @@ std::deque<sf::VertexArray> walls;
 std::vector<std::vector<Vec2>> vertex;
 std::deque<sf::Vector2f> collidedVertex;
 
+struct Spot
+{
+    int f, g, h;
+};
+
+std::vector<std::vector<Spot>> grid(5);
+std::vector<Spot> openSet;
+std::vector<Spot> closedSet;
+
+struct Spot startPoint;
+struct Spot endPoint;
+
 Scene_TopDown::Scene_TopDown(GameEngine * gameEngine, const std::string & levelPath)
     : Scene(gameEngine)
     , m_levelPath(levelPath)
@@ -57,6 +69,8 @@ void Scene_TopDown::loadLevel(const std::string & fileName)
 
     spawnPlayer();
     setupWalls();
+
+    AStarPathfinding();
 }
 
 void Scene_TopDown::loadConfigFile(const std::string & fileName)
@@ -645,7 +659,31 @@ void Scene_TopDown::drawGrid(bool draw)
                 m_game->window().draw(m_gridText);
             }
         }
+    }
+}
+
+
+
+void Scene_TopDown::AStarPathfinding()
+{
+
+    for(int i = 0; i < grid.size(); ++i)
+    {
+        for(int j = 0; j < grid.size(); ++j)
+        {
+            struct Spot s;
+            grid[i].push_back(s);
+
+        }
 
     }
+    std::cerr << grid[0].size() << "\n";
+    std::cerr << grid.size() << "\n";
+
+    startPoint = grid[0][0];
+    endPoint = grid[grid.size() - 1][grid[0].size() - 1];
+
+    openSet.push_back(startPoint);
+
 }
 
