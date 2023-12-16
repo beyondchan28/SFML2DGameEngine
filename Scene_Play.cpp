@@ -9,7 +9,7 @@
 #include <fstream>
 #include <queue>
 
-std::queue<size_t> tilesId;
+std::deque<size_t> tilesId;
 std::deque<Entity> collidedTiles;
 sf::Vector2f playerSpriteDir = {1.0f, 1.0f};
 
@@ -111,6 +111,7 @@ void Scene_Play::spawnPlayer()
     player->addComponent<CAnimation>();
     player->addComponent<CGravity>(10.0f);
     player->addComponent<CRectangle>(size);
+    player->addComponent<CRaycast>();
 
     m_player = player;
 //    std::cout << m_entityManager.getEntities("Player")[0]->tag() << "\n";
@@ -260,7 +261,6 @@ void Scene_Play::sDoAction(const Action & action)
 // maybe there is something to do with previous overlap ?
 void Scene_Play::sCollision()
 {
-
     //player fall Collision
     for(auto & t : m_entityManager.getEntities("Tile"))
     {
@@ -271,22 +271,50 @@ void Scene_Play::sCollision()
         bool isOverlap = m_physics.isOverlap(overlapPos);
         if(isOverlap)
         {
-            m_player->getComponent<CGravity>().useGravity = false;
 //            collidedTiles.push_back();
 //                Vec2 overlapDir = m_physics.getOverlapDirection(m_player, t);
-            const Vec2 & prevOverlap = m_player->getComponent<CTransform>().prevPos;
+//            const Vec2 & prevOverlap = m_player->getComponent<CTransform>().prevPos;
             Vec2 overlapDir = m_physics.getOverlapDirection(m_player, t);
-            if (prevOverlap != overlapDir)
+//            if (prevOverlap != overlapDir)
+//            {
+//                m_player->getComponent<CTransform>().prevPos = overlapDir;
+//            }
+
+            if (overlapDir.y == -1)
             {
-                m_player->getComponent<CTransform>().prevPos = overlapDir;
+                m_player->getComponent<CGravity>().useGravity = false;
             }
 
-            m_player->getComponent<CTransform>().pos += (overlapPos * prevOverlap);
+            m_player->getComponent<CTransform>().pos += (overlapPos * overlapDir);
 //                m_player->getComponent<CGravity>().useGravity = false;
         }
     }
 
+    for (auto & e : m_entityManager.getEntities())
+    {
+        if (e->hasComponent<CRaycast>() && e->hasComponent<CGravity>() && e->getComponent<CGravity>().useGravity == false)
+        {
+            const Vec2 & halfSize = e->getComponent<CBoundingBox>().halfSize;
+            const Vec2 & pos = e->getComponent<CTransform>().pos;
+            Vec2 pA = {pos.x - halfSize.x, pos.y + halfSize.y + 1.0f}; // left
+            Vec2 pB = {pos.x + halfSize.x, pos.y + halfSize.y + 1.0f}; // right
+            e->getComponent<CRaycast>().pointB = pA;
+            e->getComponent<CRaycast>().pointB = pB;
+            Vec2 & raycastPA = e->getComponent<CRaycast>().pointA;
+            Vec2 & raycastPB = e->getComponent<CRaycast>().pointB;
+            for (auto & t : m_entityManager.getEntities("Tile"))
+            {
+                const Vec2 & tPos = t->getComponent<CTransform>().pos;
+                const Vec2 & halfSize = t->getComponent<CBoundingBox>().halfSize;
+                if(raycastPA.x < tPos.x - halfSize.x || raycastPA.x > tPos.x + halfSize.x)
+                {
+                    e->getComponent<CGravity>().useGravity = true;
+                }
+            }
+        }
+    }
 
+    std::cerr << m_player->getComponent<CGravity>().useGravity << "\n";
 
 //    for(auto & t : m_entityManager.getEntities("Tile"))
 //    {
@@ -383,7 +411,6 @@ void Scene_Play::sGravity()
     if(m_player->hasComponent<CGravity>())
     {
         float & eVelY = m_player->getComponent<CTransform>().velocity.y;
-        float & gravity = m_player->getComponent<CGravity>().gravity;
 
         if (m_player->getComponent<CGravity>().useGravity == true)
         {
@@ -470,10 +497,12 @@ void Scene_Play::sMovement(sf::Time deltaTime)
                                           m_player->getComponent<CTransform>().velocity.x,
                                           deltaTime.asSeconds() * 100.0f);
 
+    float gravityLerp = m_physics.approach( m_player->getComponent<CTransform>().velocity.y * 1000.f,
+                                          m_player->getComponent<CTransform>().velocity.y,
+                                          deltaTime.asSeconds() * 100.0f);
 
-
-    m_player->getComponent<CTransform>().pos.y += (m_player->getComponent<CTransform>().velocity.y * deltaTime.asSeconds() *  200.f  ); // velocity times speed
-    m_player->getComponent<CTransform>().pos.x += (speedLerp * deltaTime.asSeconds() * 100.0f); // velocity times speed
+    m_player->getComponent<CTransform>().pos.y += (gravityLerp); // velocity times speed
+    m_player->getComponent<CTransform>().pos.x += (speedLerp); // velocity times speed
 
 
 //    std::cout << m_player->getComponent<CTransform>().velocity.x << " ";

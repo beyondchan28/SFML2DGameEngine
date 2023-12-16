@@ -125,3 +125,14 @@ sf::VertexArray Scene::createVertex(sf::PrimitiveType shapeType, size_t points)
 
     return shape;
 }
+
+sf::VertexArray Scene::createRaycast(Vec2 pointA, Vec2 pointB, sf::Color color)
+{
+    sf::VertexArray rayCast(sf::Lines, 2);
+    rayCast[0].position = sf::Vector2f(pointA.x, pointA.y);
+    rayCast[1].position = sf::Vector2f(pointB.x, pointB.y);
+    rayCast[0].color = color;
+    rayCast[1].color = color;
+
+    return rayCast;
+}

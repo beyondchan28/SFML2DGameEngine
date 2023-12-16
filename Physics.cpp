@@ -105,7 +105,7 @@ Vec2 Physics::getOverlapDirection(std::shared_ptr<Entity> a, std::shared_ptr<Ent
             overlapDir.x = 1;
         }
 
-        std::cerr << overlapDir.x << " " << overlapDir.y << "\n";
+//        std::cerr << overlapDir.x << " " << overlapDir.y << "\n";
 
         return overlapDir;
     }

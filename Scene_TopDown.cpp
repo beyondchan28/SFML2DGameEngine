@@ -10,13 +10,16 @@
 #include <deque>
 #include <cmath>
 
-std::deque<sf::VertexArray> walls;
-std::vector<std::vector<Vec2>> vertex;
+std::deque<sf::VertexArray> walls; //for drawing
+std::vector<std::vector<Vec2>> vertex; // for grouping vertex per walls/object
+std::vector<Vec2> ungroupVertex; // for additional raycast
 std::deque<sf::Vector2f> collidedVertex;
 
 struct Spot
 {
+    float x, y;
     int f, g, h;
+
 };
 
 std::vector<std::vector<Spot>> grid(5);
@@ -202,10 +205,7 @@ void Scene_TopDown::sRender()
 
     renderWalls();
     raycastDetection();
-    renderSightPolygon();
-
-
-//    m_game->window().draw(drawVertex(4));
+//    renderSightPolygon();
 
     drawGrid(m_drawGrid);
 }
@@ -218,12 +218,15 @@ void Scene_TopDown::raycastDetection()
         {
             const Vec2 & playerPos = m_player->getComponent<CTransform>().pos;
             Vec2 point1(playerPos.x, playerPos.y);
-            sf::VertexArray rayCast(sf::Lines, 2); //find a way to store this
+            Vec2 point2;
             Physics::Intersect intersection;
+            sf::VertexArray rayCast = createRaycast(point1, point2, sf::Color::Black);
+            Vec2 additionPoint2;
+            sf::VertexArray AdditionRayCast = createRaycast(point1, additionPoint2, sf::Color::Red); //find a way to store this
 
             for (int i = 0; i < v.size(); ++i )
             {
-                Vec2 point2 = v[i];
+                point2 = v[i];
                 for (auto & l : vertex)
                 {
                     for (int index = 0; index < l.size(); ++index)
@@ -236,30 +239,76 @@ void Scene_TopDown::raycastDetection()
                         {
                             intersection = m_physics.lineIntersection(point1, point2, l[0], l[l.size()-1]);
                         }
+
                         if(intersection.result)
                         {
                             point2 = intersection.pos;
                         }
-
-
-
-                        // calculate angle first
-                        // if not intersect, cast 2 more raycast slightly to the left and right
-//                        else
-//                        {
-//
-//                        }
                     }
                 }
 
-                rayCast[0].position = sf::Vector2f(point1.x, point1.y);
                 rayCast[1].position = sf::Vector2f(point2.x, point2.y);
                 m_game->window().draw(rayCast);
-                collidedVertex.push_back(rayCast[1].position);
-
             }
+
         }
     }
+
+    for( auto & v : ungroupVertex)
+    {
+        const Vec2 & playerPos = m_player->getComponent<CTransform>().pos;
+        Vec2 point1(playerPos.x, playerPos.y);
+        Vec2 point2Left;
+        Vec2 point2Right;
+        float angle = std::atan2(v.y - point1.y, v.x - point1.x);
+
+        point2Left.x = v.x + std::cos(angle - 0.0001f) * 800;
+        point2Left.y = v.y + std::sin(angle - 0.0001f) * 800;
+
+        point2Right.x = v.x + std::cos(angle + 0.0001f) * 800;
+        point2Right.y = v.y + std::sin(angle + 0.0001f) * 800;
+
+        Physics::Intersect intersectionLeft;
+        Physics::Intersect intersectionRight;
+
+        sf::VertexArray rayCastLeft = createRaycast(point1, point2Left, sf::Color::Red);
+        sf::VertexArray rayCastRight = createRaycast(point1, point2Right, sf::Color::Yellow);
+        for(auto & l : vertex)
+        {
+            for(int index = 0; index < l.size(); ++index)
+            {
+                if (index + 1 < l.size())
+                {
+
+                    intersectionLeft = m_physics.lineIntersection(point1, point2Left, l[index], l[index+1]);
+                    intersectionRight = m_physics.lineIntersection(point1, point2Right, l[index], l[index+1]);
+                }
+                else
+                {
+                    intersectionLeft = m_physics.lineIntersection(point1, point2Left, l[0], l[l.size()-1]);
+                    intersectionRight = m_physics.lineIntersection(point1, point2Right, l[0], l[l.size()-1]);
+                }
+
+                if(intersectionLeft.result)
+                {
+                    point2Left = intersectionLeft.pos;
+                }
+                if(intersectionRight.result)
+                {
+                    point2Right= intersectionRight.pos;
+                }
+            }
+
+
+        }
+            rayCastLeft[1].position = sf::Vector2f(point2Left.x, point2Left.y);
+            m_game->window().draw(rayCastLeft);
+
+            rayCastRight[1].position = sf::Vector2f(point2Right.x, point2Right.y);
+            m_game->window().draw(rayCastRight);
+
+    }
+
 }
 
 void Scene_TopDown::renderSightPolygon()
@@ -296,14 +345,13 @@ void Scene_TopDown::renderSightPolygon()
 //    }
 }
 
+
 void Scene_TopDown::sortSightPoint()
 {
     if(!collidedVertex.empty())
     {
-        const Vec2 & playerPos = m_player->getComponent<CTransform>().pos;
-
-        std::sort(collidedVertex.begin(), collidedVertex.end(), [](sf::Vector2f a, sf::Vector2f b){ return  a.x < b.x; });
-        std::sort(collidedVertex.begin(), collidedVertex.end(), [](sf::Vector2f a, sf::Vector2f b){ return a.y < b.y; });
+//        std::sort(collidedVertex.begin(), collidedVertex.end(), calcAngle());
+//        std::sort(collidedVertex.begin(), collidedVertex.end(), [](sf::Vector2f a, sf::Vector2f b){ return a.y < b.y; });
 
     }
 }
@@ -329,22 +377,22 @@ void Scene_TopDown::renderWalls()
 void Scene_TopDown::setupWalls()
 {
     //this needs to scan to all the vertex, not just itself
-//    sf::VertexArray screenRect = createVertex(sf::LineStrip, 5);
-//    static Vec2 screenCorner1(0.0f, 0.0f);
-//    static Vec2 screenCorner2((float)windowWidth(), 0.0f);
-//    static Vec2 screenCorner3((float)windowWidth(), (float)windowHeight());
-//    static Vec2 screenCorner4(0.0f, (float)windowHeight());
-//    std::vector<Vec2> screenVex =
-//    {
-//        screenCorner1, screenCorner2, screenCorner3, screenCorner4
-//    };
-//    vertex.push_back(screenVex);
-//    screenRect[0].position = sf::Vector2f(screenCorner1.x, screenCorner1.y);
-//    screenRect[1].position = sf::Vector2f(screenCorner2.x, screenCorner2.y);
-//    screenRect[2].position = sf::Vector2f(screenCorner3.x, screenCorner3.y);
-//    screenRect[3].position = sf::Vector2f(screenCorner4.x, screenCorner4.y);
-//    screenRect[4].position = sf::Vector2f(screenCorner1.x, screenCorner1.y);
-//    walls.push_back(screenRect);
+    sf::VertexArray screenRect = createVertex(sf::LineStrip, 5);
+    static Vec2 screenCorner1(0.0f, 0.0f);
+    static Vec2 screenCorner2((float)windowWidth(), 0.0f);
+    static Vec2 screenCorner3((float)windowWidth(), (float)windowHeight());
+    static Vec2 screenCorner4(0.0f, (float)windowHeight());
+    std::vector<Vec2> screenVex =
+    {
+        screenCorner1, screenCorner2, screenCorner3, screenCorner4
+    };
+    vertex.push_back(screenVex);
+    screenRect[0].position = sf::Vector2f(screenCorner1.x, screenCorner1.y);
+    screenRect[1].position = sf::Vector2f(screenCorner2.x, screenCorner2.y);
+    screenRect[2].position = sf::Vector2f(screenCorner3.x, screenCorner3.y);
+    screenRect[3].position = sf::Vector2f(screenCorner4.x, screenCorner4.y);
+    screenRect[4].position = sf::Vector2f(screenCorner1.x, screenCorner1.y);
+    walls.push_back(screenRect);
 
     sf::VertexArray rect = createVertex(sf::LineStrip, 5);
     static Vec2 rectP1(100.f, 20.f);
@@ -377,6 +425,15 @@ void Scene_TopDown::setupWalls()
     triangle[1].position = sf::Vector2f(triP2.x, triP2.y);
     triangle[2].position = sf::Vector2f(triP3.x, triP3.y);
     walls.push_back(triangle);
+    for(auto arrVec : vertex)
+    {
+        for(auto vec : arrVec)
+        {
+            ungroupVertex.push_back(vec);
+        }
+    }
+
+    std::cerr << ungroupVertex[5].x;
 
 }
 
@@ -684,6 +741,18 @@ void Scene_TopDown::AStarPathfinding()
     endPoint = grid[grid.size() - 1][grid[0].size() - 1];
 
     openSet.push_back(startPoint);
+
+    //looping
+    if(!openSet.empty())
+    {
+        //keep going
+    }
+    else
+    {
+        //no solution
+    }
+
+
 
 }
 

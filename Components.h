@@ -28,6 +28,18 @@ public:
     {}
 };
 
+class CRaycast : public Component
+{
+public:
+    Vec2 pointA = {0.0 , 0.0};
+    Vec2 pointB = {0.0 , 0.0};
+
+    CRaycast() {};
+    CRaycast(const Vec2 & pA, const Vec2 & pB)
+    : pointA(pA), pointB(pB)
+    {};
+};
+
 class CShape : public Component
 {
 public:
@@ -146,3 +158,4 @@ public:
     CState() {};
     CState(const std::string & s): state(s) {};
 };
+

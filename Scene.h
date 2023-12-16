@@ -58,4 +58,5 @@ public:
     bool hasEnded() const; // for deleting scene
     void drawLine(const Vec2 & p1, const Vec2 & p2);
     sf::VertexArray createVertex(sf::PrimitiveType shapeType, size_t points);
+    sf::VertexArray createRaycast(Vec2 pointA, Vec2 pointB, sf::Color color);
 };

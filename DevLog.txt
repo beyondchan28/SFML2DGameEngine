@@ -49,6 +49,7 @@ todo:
         * the current dircetion algorithm maybe not that efficient
         * need to validate the direction collision algorithm
     + need to find a way so that not always checking all the tiles for collision
+    + making raycast or line for detect is still on ground or not ()
 - Movement system ()
     + use velocity, dont directly interact to the position
     + times deltaTime and acceleration for smooth movement
@@ -80,6 +81,10 @@ Implementing LineSegment Intersection/RayCasting/Light
     + stil dont know how to sort the ray cast
 - making the polygon mesh collision and intersection (Vertex based mesh)
 - implement how to calculate and firing the raycast
+- decouple the raycast creation ()
+- make different loop for additional raycast  ()
+- and the sort () 
+    + still dont really understand how this works
 
 Implement advance game loop (X)
 
