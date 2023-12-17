@@ -49,8 +49,8 @@ protected:
     void renderWalls();
     void raycastDetection();
     void sortSightPoint();
-    void calculateRaycastAngle();
     void renderSightPolygon();
+    float calculateRaycastAngle(sf::Vector2f collidedVertex);
 
     Vec2 gridToMidPixel(float gridX, float gridY, std::shared_ptr<Entity> entity);
 

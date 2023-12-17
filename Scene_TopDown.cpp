@@ -13,7 +13,9 @@
 std::deque<sf::VertexArray> walls; //for drawing
 std::vector<std::vector<Vec2>> vertex; // for grouping vertex per walls/object
 std::vector<Vec2> ungroupVertex; // for additional raycast
-std::deque<sf::Vector2f> collidedVertex;
+std::vector<sf::Vector2f> collidedVertex;
+std::vector<std::tuple<sf::Vector2f, float>> collVertexAndAngle;
+
 
 struct Spot
 {
@@ -204,10 +206,32 @@ void Scene_TopDown::sRender()
     }
 
     renderWalls();
-    raycastDetection();
-//    renderSightPolygon();
+    renderSightPolygon();
 
     drawGrid(m_drawGrid);
+}
+
+
+void Scene_TopDown::renderSightPolygon()
+{
+    raycastDetection();
+//    sortSightPoint();
+
+//    if(!collVertexAndAngle.empty())
+//    {
+//        sf::VertexArray polygonSight = createVertex(sf::TriangleFan, (int)collVertexAndAngle.size()+1);
+//        const Vec2 & playerPos = m_player->getComponent<CTransform>().pos;
+//        polygonSight[0].position =  sf::Vector2f(playerPos.x, playerPos.y);
+//        for(int i = 0; i < collVertexAndAngle.size(); ++i)
+//        {
+//            polygonSight[i+1].position = std::get<0>(collVertexAndAngle[i]);
+//            polygonSight[i+1].color = sf::Color::Black;
+//        }
+//
+//        m_game->window().draw(polygonSight);
+//        collidedVertex.clear();
+//        collVertexAndAngle.clear();
+//    }
 }
 
 void Scene_TopDown::raycastDetection()
@@ -249,6 +273,7 @@ void Scene_TopDown::raycastDetection()
 
                 rayCast[1].position = sf::Vector2f(point2.x, point2.y);
                 m_game->window().draw(rayCast);
+                collidedVertex.push_back(rayCast[1].position);
             }
 
         }
@@ -260,19 +285,21 @@ void Scene_TopDown::raycastDetection()
         Vec2 point1(playerPos.x, playerPos.y);
         Vec2 point2Left;
         Vec2 point2Right;
+
+        float scaleAmount = 1000.0f;
         float angle = std::atan2(v.y - point1.y, v.x - point1.x);
 
-        point2Left.x = v.x + std::cos(angle - 0.0001f) * 800;
-        point2Left.y = v.y + std::sin(angle - 0.0001f) * 800;
+        point2Left.x = v.x + std::cos(angle - 0.0001f) * scaleAmount;
+        point2Left.y = v.y + std::sin(angle - 0.0001f) * scaleAmount;
 
-        point2Right.x = v.x + std::cos(angle + 0.0001f) * 800;
-        point2Right.y = v.y + std::sin(angle + 0.0001f) * 800;
+        point2Right.x = v.x + std::cos(angle + 0.0001f) * scaleAmount;
+        point2Right.y = v.y + std::sin(angle + 0.0001f) * scaleAmount;
 
         Physics::Intersect intersectionLeft;
         Physics::Intersect intersectionRight;
 
-        sf::VertexArray rayCastLeft = createRaycast(point1, point2Left, sf::Color::Red);
-        sf::VertexArray rayCastRight = createRaycast(point1, point2Right, sf::Color::Yellow);
+        sf::VertexArray rayCastLeft = createRaycast(point1, point2Left, sf::Color::Black);
+        sf::VertexArray rayCastRight = createRaycast(point1, point2Right, sf::Color::Black);
         for(auto & l : vertex)
         {
             for(int index = 0; index < l.size(); ++index)
@@ -303,64 +330,45 @@ void Scene_TopDown::raycastDetection()
         }
             rayCastLeft[1].position = sf::Vector2f(point2Left.x, point2Left.y);
             m_game->window().draw(rayCastLeft);
+            collidedVertex.push_back(rayCastLeft[1].position);
 
             rayCastRight[1].position = sf::Vector2f(point2Right.x, point2Right.y);
             m_game->window().draw(rayCastRight);
+            collidedVertex.push_back(rayCastRight[1].position);
 
     }
 
 }
 
-void Scene_TopDown::renderSightPolygon()
-{
-    sortSightPoint();
 
-    if(!collidedVertex.empty())
-    {
-        sf::VertexArray polygonSight = createVertex(sf::TriangleFan, (int)collidedVertex.size()+1);
-        const Vec2 & playerPos = m_player->getComponent<CTransform>().pos;
-        polygonSight[0].position =  sf::Vector2f(playerPos.x, playerPos.y);
-        for(int i = 0; i < collidedVertex.size(); ++i)
-        {
-            polygonSight[i+1].position = collidedVertex[i];
-        }
-
-        m_game->window().draw(polygonSight);
-        collidedVertex.clear();
-    }
-
-//    if(!collidedVertex.empty())
-//    {
-//        sf::ConvexShape polygonSight;
-//        polygonSight.setPointCount(collidedVertex.size() + 1);
-//        const Vec2 & playerPos = m_player->getComponent<CTransform>().pos;
-//        polygonSight.setPoint(0, sf::Vector2f(playerPos.x, playerPos.y));
-//        for(int i = 0; i < collidedVertex.size(); ++i)
-//        {
-//            polygonSight.setPoint(i+1, collidedVertex[i]);
-//        }
-//
-//        m_game->window().draw(polygonSight);
-//        collidedVertex.clear();
-//    }
-}
 
 
 void Scene_TopDown::sortSightPoint()
 {
     if(!collidedVertex.empty())
     {
-//        std::sort(collidedVertex.begin(), collidedVertex.end(), calcAngle());
-//        std::sort(collidedVertex.begin(), collidedVertex.end(), [](sf::Vector2f a, sf::Vector2f b){ return a.y < b.y; });
+        for(auto & v : collidedVertex)
+        {
+            float angle = calculateRaycastAngle(v);
+            collVertexAndAngle.push_back({v, angle});
+        }
 
+        std::sort(collVertexAndAngle.begin(), collVertexAndAngle.end(),
+                  [&](const std::tuple<sf::Vector2f, float> & a, const std::tuple<sf::Vector2f, float> & b)
+                  {
+                      return std::get<1>(a) < std::get<1>(b);
+                  });
     }
 }
 
-void Scene_TopDown::calculateRaycastAngle()
+float Scene_TopDown::calculateRaycastAngle(sf::Vector2f collidedVertex)
 {
-//    float angle = std::atan2(point2.y, point2.x);
-//    point2.x = point1.x + std::cos(angle);
-//    point2.y = point1.y + std::sin(angle);
+    const Vec2 & playerPos = m_player->getComponent<CTransform>().pos;
+    Vec2 arbVecPoint2(playerPos.x, playerPos.y * 800.f);
+    float arbVecSlope = std::tan((arbVecPoint2.y - playerPos.y) / (arbVecPoint2.x - playerPos.x));
+    float collVecSlope = std::tan((collidedVertex.y - playerPos.y) / (collidedVertex.x - playerPos.x));
+    float angleOfTwoLines = std::tan(std::abs((arbVecSlope - collVecSlope) / (1 + arbVecSlope * collVecSlope)));
+    return angleOfTwoLines;
 }
 
 void Scene_TopDown::renderWalls()
@@ -369,9 +377,6 @@ void Scene_TopDown::renderWalls()
     {
         m_game->window().draw(walls.at(i));
     }
-
-
-
 }
 
 void Scene_TopDown::setupWalls()
