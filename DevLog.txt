@@ -1,4 +1,7 @@
 ***DEADLINE next week, platformer game done***
+setup :
+- use the MinGW compiler version and sfml version from this links to be worked : https://www.sfml-dev.org/download/sfml/2.5.1/
+
 
 need to read more
 - pass by value vs pass by reference (X)

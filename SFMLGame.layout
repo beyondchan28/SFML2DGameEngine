@@ -2,39 +2,19 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Debug" />
-	<File name="Scene_TopDown.h" open="1" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1061" topLine="12" />
-		</Cursor>
-	</File>
-	<File name="Scene_TopDown.cpp" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="8843" topLine="397" />
-		</Cursor>
-	</File>
 	<File name="Entity.cpp" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="287" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="main.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="Scene_Play.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="356" topLine="0" />
+			<Cursor1 position="7444" topLine="254" />
 		</Cursor>
 	</File>
-	<File name="Scene_Play.h" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="Entity.h" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1058" topLine="16" />
-		</Cursor>
-	</File>
-	<File name="Scene_Menu.h" open="1" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="405" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Assets.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1594" topLine="37" />
+			<Cursor1 position="216" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="Game.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -42,24 +22,54 @@
 			<Cursor1 position="148" topLine="5" />
 		</Cursor>
 	</File>
+	<File name="EntityManager.cpp" open="1" top="1" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1596" topLine="36" />
+		</Cursor>
+	</File>
+	<File name="Assets.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1594" topLine="37" />
+		</Cursor>
+	</File>
+	<File name="Vec2.h" open="1" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="573" topLine="3" />
+		</Cursor>
+	</File>
 	<File name="Action.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="37" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="Animation.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="Physics.h" open="1" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="863" topLine="1" />
+			<Cursor1 position="1020" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="Physics.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="Vec2.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2754" topLine="141" />
+			<Cursor1 position="1565" topLine="85" />
 		</Cursor>
 	</File>
-	<File name="EntityManager.cpp" open="1" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="Scene_Play.h" open="1" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1489" topLine="2" />
+			<Cursor1 position="1058" topLine="16" />
+		</Cursor>
+	</File>
+	<File name="EntityManager.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="273" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Scene.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2130" topLine="41" />
+		</Cursor>
+	</File>
+	<File name="Assets.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="213" topLine="2" />
 		</Cursor>
 	</File>
 	<File name="GameEngine.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -72,64 +82,9 @@
 			<Cursor1 position="330" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="GameEngine.h" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="444" topLine="11" />
-		</Cursor>
-	</File>
-	<File name="Entity.h" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="1" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="216" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Assets.h" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="213" topLine="2" />
-		</Cursor>
-	</File>
-	<File name="Vec2.cpp" open="1" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="3" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1565" topLine="85" />
-		</Cursor>
-	</File>
-	<File name="Scene_Play.cpp" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="7444" topLine="254" />
-		</Cursor>
-	</File>
-	<File name="Scene_Menu.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="942" topLine="24" />
-		</Cursor>
-	</File>
 	<File name="Scene.h" open="1" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="593" topLine="18" />
-		</Cursor>
-	</File>
-	<File name="Scene.cpp" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2130" topLine="41" />
-		</Cursor>
-	</File>
-	<File name="Components.h" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="243" topLine="7" />
-		</Cursor>
-	</File>
-	<File name="Physics.h" open="1" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1020" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="Vec2.h" open="1" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="573" topLine="3" />
-		</Cursor>
-	</File>
-	<File name="Game.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="229" topLine="24" />
 		</Cursor>
 	</File>
 	<File name="Action.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -137,9 +92,54 @@
 			<Cursor1 position="217" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="EntityManager.h" open="1" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="Game.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="273" topLine="0" />
+			<Cursor1 position="229" topLine="24" />
+		</Cursor>
+	</File>
+	<File name="Scene_Menu.h" open="1" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="405" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Components.h" open="1" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="243" topLine="7" />
+		</Cursor>
+	</File>
+	<File name="main.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="356" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Animation.cpp" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="863" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="GameEngine.h" open="1" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="444" topLine="11" />
+		</Cursor>
+	</File>
+	<File name="Physics.cpp" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2754" topLine="141" />
+		</Cursor>
+	</File>
+	<File name="Scene_TopDown.h" open="1" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1061" topLine="12" />
+		</Cursor>
+	</File>
+	<File name="Scene_TopDown.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7769" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="Scene_Menu.cpp" open="1" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="942" topLine="24" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>
