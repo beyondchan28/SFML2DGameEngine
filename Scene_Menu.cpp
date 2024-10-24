@@ -1,6 +1,7 @@
 #include "Scene_Menu.h"
 #include "Scene_TopDown.h"
 #include "Scene_Play.h"
+#include "Scene_GeometryShooter.h"
 #include "Scene.h"
 
 Scene_Menu::Scene_Menu(GameEngine * gameEngine)
@@ -13,10 +14,12 @@ void Scene_Menu::init()
 {
     m_menuStrings.push_back("LEVEL 1");
     m_menuStrings.push_back("LEVEL 2");
+    m_menuStrings.push_back("LEVEL 3");
 
     //configurationFilePath
     m_levelPaths.push_back("level1Conf.txt");
     m_levelPaths.push_back("level2Conf.txt");
+    m_levelPaths.push_back("level3Conf.txt");
 
     registerAction(sf::Keyboard::W, "UP");
     registerAction(sf::Keyboard::S, "DOWN");
@@ -24,7 +27,7 @@ void Scene_Menu::init()
     registerAction(sf::Keyboard::Escape, "QUIT");
 
     m_title = "MAIN MENU";
-
+    m_entityManager = EntityManager();
     auto & assets = m_game->assets();
 
     m_menuText.setFont(assets.getFont("fontName"));
@@ -93,6 +96,10 @@ void Scene_Menu::sDoAction(const Action & action)
             else if (m_selectedMenuIndex == 1)
             {
                 m_game->changeScene("LEVEL 2", std::make_shared<Scene_TopDown>(m_game, m_levelPaths[m_selectedMenuIndex]));
+            }
+            else if (m_selectedMenuIndex == 2)
+            {
+                m_game->changeScene("LEVEL 3", std::make_shared<Scene_GeometryShooter>(m_game, m_levelPaths[m_selectedMenuIndex]));
             }
         }
         else if(action.name() == "QUIT")

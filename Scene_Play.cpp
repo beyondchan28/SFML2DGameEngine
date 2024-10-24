@@ -103,7 +103,6 @@ void Scene_Play::spawnPlayer()
                                  sf::Color(m_playerConfig.outlineColorRed, m_playerConfig.outlineColorGreen, m_playerConfig.outlineColorBlue),
                                  m_playerConfig.outlineThickness);
 
-    //newEntity->addComponent<CCollision>(pConf.collisionRadius);
     player->addComponent<CInput>();
     const Vec2 size = {16.0f, 16.0f};
     player->addComponent<CBoundingBox>( size );
@@ -114,7 +113,6 @@ void Scene_Play::spawnPlayer()
     player->addComponent<CRaycast>();
 
     m_player = player;
-//    std::cout << m_entityManager.getEntities("Player")[0]->tag() << "\n";
 }
 
 void Scene_Play::update(sf::Time deltaTime)
